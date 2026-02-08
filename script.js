@@ -137,14 +137,83 @@ function showChoiceButtons() {
   btnGoa.onmouseout = () => (btnGoa.style.transform = "scale(1)");
 
   btnGoa.onclick = () => {
-    img.src = "img/GOA.png";
-    wrapper.style.display = "none";
-    wrapper.style.color = "#f0e5db";
-    wrapper.style.marginBottom = "300px";
-    wrapper.style.fontSize = "2.5rem";
+    if (img) img.src = "img/GOA.png";
+
     container.style.display = "none";
 
-    loopAnimation(["არიჩიე შენი გზა"], 40, 100, 1000);
+    wrapper.style.display = "block";
+    wrapper.style.color = "#f0e5db";
+    wrapper.style.fontSize = "2.5rem";
+    wrapper.style.marginBottom = "300px";
+
+    loopAnimation(["აირჩიე შენი გზა"], 40, 100, 1000, act2);
+
+    function act2() {
+      const act2Container = document.createElement("div");
+      act2Container.style.cssText = `
+        display: flex; 
+        gap: 500px; 
+        opacity: 0; 
+        justify-content: center;
+        position: absolute; 
+        bottom: 150px; 
+        left: 0; 
+        width: 100%;
+        z-index: 1000;
+      `;
+
+      const goodLearn = document.createElement("button");
+      goodLearn.innerText = "კეთილსინდისიერი სწავლა";
+      goodLearn.style.cssText = `
+        padding: 15px 25px;
+        background-color: #28a745; /* მწვანე */
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: transform 0.2s;
+      `;
+      goodLearn.onmouseover = () => (goodLearn.style.transform = "scale(1.05)");
+      goodLearn.onmouseout = () => (goodLearn.style.transform = "scale(1)");
+
+      goodLearn.onclick = () => {
+        alert("შენ გახდი წარმატებული Full Stack დეველოპერი!");
+      };
+
+      const bedLearn = document.createElement("button");
+      bedLearn.innerText = "ზერელე სწავლა";
+      bedLearn.style.cssText = `
+        padding: 15px 25px;
+        background-color: #ffc107; 
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: transform 0.2s;
+      `;
+      bedLearn.onmouseover = () => (bedLearn.style.transform = "scale(1.05)");
+      bedLearn.onmouseout = () => (bedLearn.style.transform = "scale(1)");
+
+      bedLearn.onclick = () => {
+        alert("სამწუხაროდ, ვერ გაიარე კურსი წარმატებით.");
+      };
+
+      act2Container.appendChild(goodLearn);
+      act2Container.appendChild(bedLearn);
+
+      document.body.appendChild(act2Container);
+
+      anime({
+        targets: act2Container,
+        opacity: [0, 1],
+        translateY: [20, 0],
+        duration: 1000,
+      });
+    }
   };
 
   const btnRoblox = document.createElement("button");
@@ -245,7 +314,7 @@ btn.addEventListener("click", function () {
 
   playAudioWithTimer(
     "audio/the-sound-of-a-mechanical-keyboard-on-which-text-is-typed-windows.mp3",
-    1000,//29
+    1000, //29
   );
 
   index = 0;
