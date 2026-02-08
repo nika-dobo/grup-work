@@ -239,7 +239,7 @@ function showChoiceButtons() {
           align-items: end;
         `;
 
-        playAudioWithTimer("audio/bla.mp3", 10); //15
+        playAudioWithTimer("audio/bla.mp3", 15000);
 
         loopAnimation(
           [
