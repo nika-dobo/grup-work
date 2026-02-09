@@ -272,6 +272,7 @@ function showChoiceButtons() {
             padding-right: 20px;
           `;
 
+          // --- MENTOR LOGIC ---
           const beMentor = document.createElement("button");
           beMentor.innerText = "გავხდე მენტორი";
           beMentor.style.cssText = `
@@ -586,6 +587,7 @@ function showChoiceButtons() {
             }
           };
 
+          // --- LEADER LOGIC (UPDATED) ---
           const beLider = document.createElement("button");
           beLider.innerText = "გავხდე ლიდერი";
           beLider.style.cssText = `
@@ -606,25 +608,18 @@ function showChoiceButtons() {
           beLider.onclick = () => {
             beMnetorOrLidder.style.display = "none";
 
-            mainText.style.cssText = `
-              font-size: 2em;
-              width: 100%;
-              margin: 0px;
-              margin-top: 100px;
-              color: white;
-              text-align: center;
-              background-color: transparent;
-              border-radius: 0px;
-              box-shadow: none;
-              padding: 0px;
-            `;
-
             index = 0; // RESET INDEX
-            loopAnimation(["დარწმუნებული ხააარ?"], 40, 100, 1000, showConfirm);
+            loopAnimation(
+              ["დარწმუნებული ხააარ?"],
+              40,
+              100,
+              1000,
+              showConfirmLeader,
+            );
 
-            function showConfirm() {
-              let becomeLider = document.createElement("div");
-              becomeLider.style.cssText = `
+            function showConfirmLeader() {
+              let becomeLiderDiv = document.createElement("div");
+              becomeLiderDiv.style.cssText = `
                 display: flex; 
                 gap: 50px; 
                 opacity: 0; 
@@ -653,7 +648,211 @@ function showChoiceButtons() {
               yes.onmouseover = () => (yes.style.transform = "scale(1.05)");
               yes.onmouseout = () => (yes.style.transform = "scale(1)");
 
-              yes.onclick = () => {};
+              yes.onclick = () => {
+                becomeLiderDiv.style.display = "none";
+                wrapper.style.display = "none";
+
+                // აქ იწყება მინი ლიდერის ლოგიკა
+                index = 0;
+                loopAnimation(
+                  [
+                    "შენ გაკეთე სწორი გადაწყვეტილება",
+                    "მაგრამ სანამ ლიდერი გახდები ჯერ მინი ლიდერი იქნები",
+                    "ახლა გინდა გახდე ლიდერი",
+                  ],
+                  40,
+                  100,
+                  1000,
+                  showMiniLeaderChoice,
+                );
+
+                function showMiniLeaderChoice() {
+                  let miniLeaderDiv = document.createElement("div");
+                  miniLeaderDiv.style.cssText = `
+                      display: flex; 
+                      gap: 50px; 
+                      opacity: 0; 
+                      justify-content: center;
+                      position: absolute; 
+                      bottom: 350px; 
+                      left: 0; 
+                      width: 100%;
+                      z-index: 1000;
+                    `;
+
+                  let beMini = document.createElement("button");
+                  beMini.innerText = "კი";
+                  beMini.style.cssText = `
+                      padding: 15px 25px;
+                      background-color: #dc3545; 
+                      color: white;
+                      border: none;
+                      border-radius: 8px;
+                      font-size: 16px;
+                      cursor: pointer;
+                      font-weight: bold;
+                      transition: transform 0.2s;
+                      width: 150px;
+                     `;
+                  beMini.onmouseover = () =>
+                    (beMini.style.transform = "scale(1.05)");
+                  beMini.onmouseout = () =>
+                    (beMini.style.transform = "scale(1)");
+
+                  beMini.onclick = () => {
+                    miniLeaderDiv.style.display = "none";
+
+                    index = 0;
+                    loopAnimation(
+                      [
+                        "კარგი გადაწყვეტილებაა შენ ახლა გახდი ლიდერი",
+                        "შენ ახლა გაქ არჩევანი გახდე მენტორი ან წახვიდე ჰაკათონზე",
+                        "ჰაკათონის მერე ისევ შეძლებ მენტორი გახდე",
+                      ],
+                      40,
+                      100,
+                      1000,
+                      showMentorOrHackathon,
+                    );
+
+                    function showMentorOrHackathon() {
+                      let hakatonOrMentor = document.createElement("div");
+                      hakatonOrMentor.style.cssText = `
+                              display: flex; 
+                              gap: 50px; 
+                              opacity: 0; 
+                              justify-content: center;
+                              position: absolute; 
+                              bottom: 350px; 
+                              left: 0; 
+                              width: 100%;
+                              z-index: 1000;
+                            `;
+
+                      let becomeMent = document.createElement("button");
+                      becomeMent.innerText = "გავხდე მენტორი";
+                      becomeMent.style.cssText = `
+                              padding: 15px 25px;
+                              background-color: #dc3545; 
+                              color: white;
+                              border: none;
+                              border-radius: 8px;
+                              font-size: 16px;
+                              cursor: pointer;
+                              font-weight: bold;
+                              transition: transform 0.2s;
+                              width: 150px;
+                            `;
+                      becomeMent.onmouseover = () =>
+                        (becomeMent.style.transform = "scale(1.05)");
+                      becomeMent.onmouseout = () =>
+                        (becomeMent.style.transform = "scale(1)");
+                      becomeMent.onclick = () => {};
+
+                      let hakaton = document.createElement("button");
+                      hakaton.innerText = "წავიდე ჰაკათონზე";
+                      hakaton.style.cssText = `
+                              padding: 15px 25px;
+                              background-color: #dc3545; 
+                              color: white;
+                              border: none;
+                              border-radius: 8px;
+                              font-size: 16px;
+                              cursor: pointer;
+                              font-weight: bold;
+                              transition: transform 0.2s;
+                              width: 150px;
+                            `;
+                      hakaton.onmouseover = () =>
+                        (hakaton.style.transform = "scale(1.05)");
+                      hakaton.onmouseout = () =>
+                        (hakaton.style.transform = "scale(1)");
+                      hakaton.onclick = () => {};
+
+                      let refuse = document.createElement("button");
+                      refuse.innerText = "ლიდერი დავრჩები";
+                      refuse.style.cssText = `
+                              padding: 15px 25px;
+                              background-color: #dc3545; 
+                              color: white;
+                              border: none;
+                              border-radius: 8px;
+                              font-size: 16px;
+                              cursor: pointer;
+                              font-weight: bold;
+                              transition: transform 0.2s;
+                              width: 150px;
+                            `;
+                      refuse.onmouseover = () =>
+                        (refuse.style.transform = "scale(1.05)");
+                      refuse.onmouseout = () =>
+                        (refuse.style.transform = "scale(1)");
+                      refuse.onclick = () => {};
+
+                      hakatonOrMentor.appendChild(becomeMent);
+                      hakatonOrMentor.appendChild(hakaton);
+                      hakatonOrMentor.appendChild(refuse);
+
+                      document.body.appendChild(hakatonOrMentor);
+
+                      anime({
+                        targets: hakatonOrMentor,
+                        opacity: [0, 1],
+                        translateY: [20, 0],
+                        duration: 1000,
+                      });
+                    }
+                  };
+
+                  let notMini = document.createElement("button");
+                  notMini.innerText = "არა";
+                  notMini.style.cssText = `
+                      padding: 15px 25px;
+                      background-color: #dc3545; 
+                      color: white;
+                      border: none;
+                      border-radius: 8px;
+                      font-size: 16px;
+                      cursor: pointer;
+                      font-weight: bold;
+                      transition: transform 0.2s;
+                      width: 150px;
+                     `;
+                  notMini.onmouseover = () =>
+                    (notMini.style.transform = "scale(1.05)");
+                  notMini.onmouseout = () =>
+                    (notMini.style.transform = "scale(1)");
+
+                  notMini.onclick = () => {
+                    miniLeaderDiv.style.display = "none";
+                    index = 0;
+                    loopAnimation(
+                      [
+                        "ცუდია რომ არ მოგინდა ლიდერი გამხდარიყავი",
+                        "ამიტომაც დაისჯები და",
+                        "ცხოვრებას თვიდან დაიწყებ",
+                      ],
+                      40,
+                      100,
+                      1000,
+                      function () {
+                        createRestartButton();
+                      },
+                    );
+                  };
+
+                  miniLeaderDiv.appendChild(beMini);
+                  miniLeaderDiv.appendChild(notMini);
+                  document.body.appendChild(miniLeaderDiv);
+
+                  anime({
+                    targets: miniLeaderDiv,
+                    opacity: [0, 1],
+                    translateY: [20, 0],
+                    duration: 1000,
+                  });
+                }
+              };
 
               let no = document.createElement("button");
               no.innerText = "არა";
@@ -673,7 +872,7 @@ function showChoiceButtons() {
               no.onmouseout = () => (no.style.transform = "scale(1)");
 
               no.onclick = () => {
-                becomeLider.style.display = "none";
+                becomeLiderDiv.style.display = "none";
                 wrapper.style.display = "none";
                 img.src = "img/Gemini_Generated_Image_vuwzo2vuwzo2vuwz.png";
                 playAudioWithTimer(
@@ -693,13 +892,13 @@ function showChoiceButtons() {
                 );
               };
 
-              becomeLider.appendChild(yes);
-              becomeLider.appendChild(no);
+              becomeLiderDiv.appendChild(yes);
+              becomeLiderDiv.appendChild(no);
 
-              document.body.appendChild(becomeLider);
+              document.body.appendChild(becomeLiderDiv);
 
               anime({
-                targets: becomeLider,
+                targets: becomeLiderDiv,
                 opacity: [0, 1],
                 translateY: [20, 0],
                 duration: 1000,
@@ -962,14 +1161,14 @@ btn.addEventListener("click", function () {
 
   playAudioWithTimer(
     "audio/the-sound-of-a-mechanical-keyboard-on-which-text-is-typed-windows.mp3",
-    1000,//29
+    1000, //29
   );
 
-  index = 0; 
+  index = 0; // RESET INDEX
   loopAnimation(
     [
       "hello",
-      //"დღეები ერთმანეთს ჰგავდა: გათენებამდე კომპიუტერულ თამაშებში ჩაკარგული, ენერგიისგან დაცლილი და რეალურ სამყაროს სრულად მოწყვეტილი ვიყავი. ჩემი ცხოვრების წესი საშინელებას დაემსგავსა, სადაც მოუწესრიგებელი ძილი და უმიზნოდ გაფლანგული საათები ერთადერთ რეალობად მექცა. ერთფეროვან სქროლვაში მოულოდნელად GOA აკადემიის რეკლამას წავაწყდი, რომელმაც ჩემში მიძინებული ინტერესი — პროგრამირება და ნამდვილი საქმის კეთება — ისევ გააღვიძა. მივხვდი, რომ თამაშში მიღწეული ვირტუალური დონეების ნაცვლად, შემეძლო საკუთარი თავი რეალურ ცხოვრებაში, ვებ-დეველოპმენტსა და კოდის წერაში განმევითარებინა. ახლა მაგიდასთან ვზივარ, ეკრანზე რეგისტრაციის ღილაკი ანათებს და ვგრძნობ, რომ ეს ჩემი შანსია, საბოლოოდ დავაღწიო თავი ამ ქაოსს. ღრმად ჩავისუნთქე, თითი მაუსის ღილაკზე მაქვს მიბჯენილი და ვფიქრობ, მზად ვარ თუ არა, რომ ჩემი დრო თამაშის ნაცვლად მომავლის მშენებლობას დავუთმო.",
+      // "დღეები ერთმანეთს ჰგავდა: გათენებამდე კომპიუტერულ თამაშებში ჩაკარგული, ენერგიისგან დაცლილი და რეალურ სამყაროს სრულად მოწყვეტილი ვიყავი. ჩემი ცხოვრების წესი საშინელებას დაემსგავსა, სადაც მოუწესრიგებელი ძილი და უმიზნოდ გაფლანგული საათები ერთადერთ რეალობად მექცა. ერთფეროვან სქროლვაში მოულოდნელად GOA აკადემიის რეკლამას წავაწყდი, რომელმაც ჩემში მიძინებული ინტერესი — პროგრამირება და ნამდვილი საქმის კეთება — ისევ გააღვიძა. მივხვდი, რომ თამაშში მიღწეული ვირტუალური დონეების ნაცვლად, შემეძლო საკუთარი თავი რეალურ ცხოვრებაში, ვებ-დეველოპმენტსა და კოდის წერაში განმევითარებინა. ახლა მაგიდასთან ვზივარ, ეკრანზე რეგისტრაციის ღილაკი ანათებს და ვგრძნობ, რომ ეს ჩემი შანსია, საბოლოოდ დავაღწიო თავი ამ ქაოსს. ღრმად ჩავისუნთქე, თითი მაუსის ღილაკზე მაქვს მიბჯენილი და ვფიქრობ, მზად ვარ თუ არა, რომ ჩემი დრო თამაშის ნაცვლად მომავლის მშენებლობას დავუთმო.",
     ],
     40,
     100,
