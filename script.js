@@ -1,3 +1,4 @@
+// --- 1. ელემენტების მოძებნა ---
 const wrapper = document.querySelector(".text");
 const btn = document.querySelector(".my-btn");
 const audio = document.getElementById("audio");
@@ -6,13 +7,135 @@ const img = document.getElementById("main-img");
 
 let index = 0;
 
-// --- დამხმარე ფუნქციები ---
+// --- 2. დამხმარე ფუნქციები (რეცეპტები) ---
 
+// ფუნქცია: ღილაკის შექმნა
+function createGameButton(text, color, onClickAction, width) {
+  const button = document.createElement("button");
+  button.innerText = text;
+
+  let buttonWidth = "";
+  if (width) {
+    buttonWidth = "width: " + width + ";";
+  }
+
+  button.style.cssText = `
+      padding: 15px 25px;
+      background-color: ${color};
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: transform 0.2s;
+      ${buttonWidth}
+  `;
+
+  button.onmouseover = function () {
+    if (button.style.transform.indexOf("translateX") !== -1) {
+      button.style.transform = "translateX(-50%) scale(1.05)";
+    } else {
+      button.style.transform = "scale(1.05)";
+    }
+  };
+
+  button.onmouseout = function () {
+    if (button.style.transform.indexOf("translateX") !== -1) {
+      button.style.transform = "translateX(-50%) scale(1)";
+    } else {
+      button.style.transform = "scale(1)";
+    }
+  };
+
+  button.onclick = onClickAction;
+  return button;
+}
+
+// ფუნქცია: GAME OVER ეფექტი (ზანზარი + ხმა + გლიჩი)
+function triggerGameOverAnimation() {
+  
+  // 1. ვრთავთ GAME OVER აუდიოს 8 წამით
+  playAudioWithTimer("audio/universfield-game-over-deep-male-voice-clip-352695.mp3", 2000);
+
+  // 2. ეკრანის ზანზარის ანიმაცია (Body-ს ვარხევთ)
+  anime({
+    targets: 'body',
+    translateX: [
+      { value: -10, duration: 50 },
+      { value: 10, duration: 50 },
+      { value: -10, duration: 50 },
+      { value: 10, duration: 50 },
+      { value: 0, duration: 50 }
+    ],
+    translateY: [
+      { value: -10, duration: 50 },
+      { value: 10, duration: 50 },
+      { value: -5, duration: 50 },
+      { value: 5, duration: 50 },
+      { value: 0, duration: 50 }
+    ],
+    easing: 'linear',
+    duration: 300
+  });
+
+  // 3. ტექსტის სტილები
+  wrapper.style.color = "red";
+  wrapper.style.textShadow = "3px 3px 0px #00ffff, -3px -3px 0px #ff00ff";
+  wrapper.style.fontSize = "2rem";
+  wrapper.style.fontWeight = "bold";
+
+  // 4. ტექსტის გლიჩის ანიმაცია
+  let tl = anime.timeline({
+    targets: ".text",
+    easing: "easeInOutQuad",
+  });
+
+  tl.add({
+    translateX: [
+      { value: -20, duration: 50 },
+      { value: 20, duration: 50 },
+      { value: -20, duration: 50 },
+      { value: 20, duration: 50 },
+      { value: 0, duration: 50 },
+    ],
+    scale: [
+      { value: 1.2, duration: 100, easing: "easeOutExpo" },
+      { value: 1.1, duration: 200 },
+    ],
+    duration: 300,
+  }).add(
+    {
+      skewX: [
+        { value: "20deg", duration: 80 },
+        { value: "-20deg", duration: 80 },
+        { value: "10deg", duration: 50 },
+        { value: "-10deg", duration: 50 },
+        { value: "5deg", duration: 50 },
+        { value: "0deg", duration: 100 },
+      ],
+      opacity: [
+        { value: 0.7, duration: 40 },
+        { value: 1, duration: 40 },
+        { value: 0.6, duration: 40 },
+        { value: 1, duration: 40 },
+      ],
+      filter: [
+        { value: "blur(2px)", duration: 100 },
+        { value: "blur(0px)", duration: 100 },
+      ],
+    },
+    "-=100"
+  );
+}
+
+// აუდიოს ჩართვა ტაიმერით
 function playAudioWithTimer(src, duration) {
   const sound = new Audio(src);
   sound.loop = true;
-  sound.volume = 0.1;
-  sound.play().catch((e) => {
+  sound.volume = 0.5; 
+  
+  sound.play().catch(function (e) {
     console.log("Audio play failed:", e);
   });
 
@@ -23,33 +146,21 @@ function playAudioWithTimer(src, duration) {
   }, duration);
 }
 
+// "თავიდან დაწყების" ღილაკი
 function createRestartButton() {
-  const restartBtn = document.createElement("button");
-  restartBtn.innerText = "ცხოვრების თავიდან დაწყება";
-  restartBtn.style.cssText = `
-      padding: 15px 25px;
-      background-color: #007bff; 
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: transform 0.2s;
-      
-      position: absolute;
-      bottom: 50px;
-      left: 50%;
-      transform: translateX(-50%);
-    `;
-  restartBtn.onmouseover = () =>
-    (restartBtn.style.transform = "translateX(-50%) scale(1.05)");
-  restartBtn.onmouseout = () =>
-    (restartBtn.style.transform = "translateX(-50%) scale(1)");
+  const restartBtn = createGameButton(
+    "ცხოვრების თავიდან დაწყება",
+    "#007bff",
+    function () {
+      location.reload();
+    }
+  );
 
-  restartBtn.onclick = () => {
-    location.reload();
-  };
+  restartBtn.style.position = "absolute";
+  restartBtn.style.bottom = "50px";
+  restartBtn.style.left = "50%";
+  restartBtn.style.transform = "translateX(-50%)";
+  restartBtn.style.boxShadow = "0 0 15px rgba(0, 123, 255, 0.5)";
 
   document.body.appendChild(restartBtn);
 
@@ -63,24 +174,30 @@ function createRestartButton() {
   });
 }
 
-function loopAnimation(
-  textArr,
-  startDuration = 950,
-  endDuration = 400,
-  cda = 600,
-  onComplete = null,
-) {
+// ტექსტის ანიმაცია
+function loopAnimation(textArr, startDuration, endDuration, waitingTime, onComplete) {
+  if (!startDuration) startDuration = 950;
+  if (!endDuration) endDuration = 400;
+  if (!waitingTime) waitingTime = 600;
+
   if (index >= textArr.length) {
     index = 0;
   }
 
   const words = textArr;
+  
+  // ვიღებთ ამჟამინდელ სიტყვას
+  const currentWord = words[index] || words[0];
+
+  // --- ცვლილება: ვამოწმებთ, არის თუ არა ეს სიტყვა "GAME OVER!!" ---
+  if (currentWord === "GAME OVER!!") {
+      triggerGameOverAnimation(); // თუ არის, ჩავრთოთ ეფექტები
+  }
 
   wrapper.innerHTML = "";
   wrapper.style.display = "block";
   wrapper.style.textAlign = "center";
 
-  const currentWord = words[index] || words[0];
   const letters = currentWord.split("");
 
   for (let i = 0; i < letters.length; i++) {
@@ -107,7 +224,7 @@ function loopAnimation(
           if (onComplete) {
             onComplete();
           }
-        }, cda);
+        }, waitingTime);
 
         if (btn.style.display !== "none") {
           setTimeout(function () {
@@ -135,17 +252,16 @@ function loopAnimation(
           },
           complete: function () {
             index++;
-            loopAnimation(words, startDuration, endDuration, cda, onComplete);
+            loopAnimation(words, startDuration, endDuration, waitingTime, onComplete);
           },
         });
-      }, cda);
+      }, waitingTime);
     },
   });
 }
 
-// --- ძირითადი ლოგიკა ---
+// --- 3. თამაშის ძირითადი სცენარი ---
 
-// საწყისი ანიმაცია
 index = 0;
 loopAnimation(["გამარჯობა"]);
 
@@ -164,33 +280,16 @@ function showChoiceButtons() {
     z-index: 1000;
   `;
 
-  const btnGoa = document.createElement("button");
-  btnGoa.innerText = "შესვლა GOA-ში";
-  btnGoa.style.cssText = `
-    padding: 15px 25px;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: transform 0.2s;
-  `;
-  btnGoa.onmouseover = () => (btnGoa.style.transform = "scale(1.05)");
-  btnGoa.onmouseout = () => (btnGoa.style.transform = "scale(1)");
-
-  btnGoa.onclick = () => {
+  // --- ღილაკი 1: შესვლა GOA-ში ---
+  const btnGoa = createGameButton("შესვლა GOA-ში", "#28a745", function () {
     if (img) img.src = "img/GOA.png";
-
     container.style.display = "none";
-
     wrapper.style.display = "block";
     wrapper.style.color = "#f0e5db";
     wrapper.style.fontSize = "2.5rem";
     wrapper.style.marginBottom = "300px";
 
-    index = 0; // RESET INDEX
+    index = 0;
     loopAnimation(["აირჩიე შენი გზა"], 40, 100, 1000, act2);
 
     function act2() {
@@ -207,25 +306,11 @@ function showChoiceButtons() {
         z-index: 1000;
       `;
 
-      const goodLearn = document.createElement("button");
-      goodLearn.innerText = "ჩადურად სწავლა";
-      goodLearn.style.cssText = `
-        padding: 15px 25px;
-        background-color: #28a745; 
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: transform 0.2s;
-      `;
-      goodLearn.onmouseover = () => (goodLearn.style.transform = "scale(1.05)");
-      goodLearn.onmouseout = () => (goodLearn.style.transform = "scale(1)");
-
-      goodLearn.onclick = () => {
+      // --- ღილაკი: ჩადურად სწავლა ---
+      const goodLearn = createGameButton("ჩადურად სწავლა", "#28a745", function () {
         act2Container.style.display = "none";
         img.src = "img/class.png";
+        
         mainText.style.cssText = `
           font-size: 1em;
           width: 900px;
@@ -244,7 +329,7 @@ function showChoiceButtons() {
 
         playAudioWithTimer("audio/bla.mp3", 1000);
 
-        index = 0; // RESET INDEX
+        index = 0;
         loopAnimation(
           [
             "GOA-ს აკადემიაში ჩაბარებისას ვიცოდი, რომ ეს ნაბიჯი ჩემს მომავალს შეცვლიდა, ამიტომ პირველივე დღიდან აქტიურად ვსწავლობდი. არცერთ დავალებას ვტოვებდი უყურადღებოდ, რადგან მჯეროდა, რომ დისციპლინა წარმატების საწინდარია. მენტორების დახმარებით რთული მასალა მარტივად ავითვისე და რეიტინგებშიც მალევე დავწინაურდი. ამ შედეგმა საკუთარი თავის რწმენა გამიორმაგა. ახლა ვხვდები, რომ აკადემიაში გატარებული დრო ჩემი პროფესიული ზრდისთვის გადამწყვეტი იყო.",
@@ -252,7 +337,7 @@ function showChoiceButtons() {
           40,
           100,
           1000,
-          showMentorLeaderBtns,
+          showMentorLeaderBtns
         );
 
         function showMentorLeaderBtns() {
@@ -272,34 +357,24 @@ function showChoiceButtons() {
             padding-right: 20px;
           `;
 
-          // --- MENTOR LOGIC ---
-          const beMentor = document.createElement("button");
-          beMentor.innerText = "გავხდე მენტორი";
-          beMentor.style.cssText = `
-            padding: 15px 25px;
-            background-color: #ffc107; 
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.2s;
-            width: 200px;
-          `;
-          beMentor.onmouseover = () =>
-            (beMentor.style.transform = "scale(1.05)");
-          beMentor.onmouseout = () => (beMentor.style.transform = "scale(1)");
+          // --- ღილაკი: გავხდე მენტორი ---
+          const beMentor = createGameButton(
+            "გავხდე მენტორი",
+            "#ffc107",
+            function () {
+              beMnetorOrLidder.style.display = "none";
+              index = 0;
+              loopAnimation(
+                ["დარწმუნებული ხააარ?"],
+                40,
+                100,
+                1000,
+                showConfirm
+              );
 
-          beMentor.onclick = () => {
-            beMnetorOrLidder.style.display = "none";
-
-            index = 0; // RESET INDEX
-            loopAnimation(["დარწმუნებული ხააარ?"], 40, 100, 1000, showConfirm);
-
-            function showConfirm() {
-              let becomeMentro = document.createElement("div");
-              becomeMentro.style.cssText = `
+              function showConfirm() {
+                let becomeMentro = document.createElement("div");
+                becomeMentro.style.cssText = `
                 display: flex; 
                 gap: 50px; 
                 opacity: 0; 
@@ -311,43 +386,29 @@ function showChoiceButtons() {
                 z-index: 1000;
               `;
 
-              let yes = document.createElement("button");
-              yes.innerText = "კი";
-              yes.style.cssText = `
-                padding: 15px 25px;
-                background-color: #28a745; 
-                color: white;
-                border: none;
-                border-radius: 8px;
-                font-size: 16px;
-                cursor: pointer;
-                font-weight: bold;
-                transition: transform 0.2s;
-                width: 150px;
-              `;
-              yes.onmouseover = () => (yes.style.transform = "scale(1.05)");
-              yes.onmouseout = () => (yes.style.transform = "scale(1)");
+                const yes = createGameButton(
+                  "კი",
+                  "#28a745",
+                  function () {
+                    becomeMentro.style.display = "none";
+                    wrapper.style.display = "none";
 
-              yes.onclick = () => {
-                becomeMentro.style.display = "none";
-                wrapper.style.display = "none";
+                    index = 0;
+                    loopAnimation(
+                      [
+                        "შენ გაკეთე სწორი გადაწყვეტილება",
+                        "მაგრამ სანამ მენტორი გახდები ჯერ მენტორ ასისტენტი იქნები",
+                        "ახლა გინდა გახდე მენტორი",
+                      ],
+                      40,
+                      100,
+                      1000,
+                      showAssistantChoice
+                    );
 
-                index = 0; // RESET INDEX
-                loopAnimation(
-                  [
-                    "შენ გაკეთე სწორი გადაწყვეტილება",
-                    "მაგრამ სანამ მენტორი გახდები ჯერ მენტორ ასისტენტი იქნები",
-                    "ახლა გინდა გახდე მენტორი",
-                  ],
-                  40,
-                  100,
-                  1000,
-                  showAssistantChoice,
-                );
-
-                function showAssistantChoice() {
-                  let becomeMentorOrNo = document.createElement("div");
-                  becomeMentorOrNo.style.cssText = `
+                    function showAssistantChoice() {
+                      let becomeMentorOrNo = document.createElement("div");
+                      becomeMentorOrNo.style.cssText = `
                     display: flex; 
                     gap: 50px; 
                     opacity: 0; 
@@ -359,44 +420,27 @@ function showChoiceButtons() {
                     z-index: 1000;
                   `;
 
-                  let bement = document.createElement("button");
-                  bement.innerText = "კი";
-                  bement.style.cssText = `
-                    padding: 15px 25px;
-                    background-color: #dc3545; 
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 16px;
-                    cursor: pointer;
-                    font-weight: bold;
-                    transition: transform 0.2s;
-                    width: 150px;
-                   `;
-                  bement.onmouseover = () =>
-                    (bement.style.transform = "scale(1.05)");
-                  bement.onmouseout = () =>
-                    (bement.style.transform = "scale(1)");
+                      const bement = createGameButton(
+                        "კი",
+                        "#dc3545",
+                        function () {
+                          becomeMentorOrNo.style.display = "none";
+                          index = 0;
+                          loopAnimation(
+                            [
+                              "კარგი გადაწყვეტილებაა შენ ახლა გახდი მენტორი",
+                              "შენ ახლა გაქ არჩევანი გახდე ლიდერი ან წახვიდე ჰაკათონზე",
+                              "ჰაკათონის მერე ისევ შეძლებ ლიდერი გახდე",
+                            ],
+                            40,
+                            100,
+                            1000,
+                            showLeaderOrHackathon
+                          );
 
-                  bement.onclick = () => {
-                    becomeMentorOrNo.style.display = "none";
-
-                    index = 0; // RESET INDEX
-                    loopAnimation(
-                      [
-                        "კარგი გადაწყვეტილებაა შენ ახლა გახდი მენტორი",
-                        "შენ ახლა გაქ არჩევანი გახდე ლიდერი ან წახვიდე ჰაკათონზე",
-                        "ჰაკათონის მერე ისევ შეძლებ ლიდერი გახდე",
-                      ],
-                      40,
-                      100,
-                      1000,
-                      showLeaderOrHackathon,
-                    );
-
-                    function showLeaderOrHackathon() {
-                      let hakatonOrLider = document.createElement("div");
-                      hakatonOrLider.style.cssText = `
+                          function showLeaderOrHackathon() {
+                            let hakatonOrLider = document.createElement("div");
+                            hakatonOrLider.style.cssText = `
                         display: flex; 
                         gap: 50px; 
                         opacity: 0; 
@@ -408,218 +452,151 @@ function showChoiceButtons() {
                         z-index: 1000;
                       `;
 
-                      let becomelid = document.createElement("button");
-                      becomelid.innerText = "გავხდე ლიდერი";
-                      becomelid.style.cssText = `
-                        padding: 15px 25px;
-                        background-color: #dc3545; 
-                        color: white;
-                        border: none;
-                        border-radius: 8px;
-                        font-size: 16px;
-                        cursor: pointer;
-                        font-weight: bold;
-                        transition: transform 0.2s;
-                        width: 150px;
-                      `;
-                      becomelid.onmouseover = () =>
-                        (becomelid.style.transform = "scale(1.05)");
-                      becomelid.onmouseout = () =>
-                        (becomelid.style.transform = "scale(1)");
-                      becomelid.onclick = () => {};
+                            const becomelid = createGameButton(
+                              "გავხდე ლიდერი",
+                              "#dc3545",
+                              function () {},
+                              "150px"
+                            );
+                            const hakaton = createGameButton(
+                              "წავიდე ჰაკათონზე",
+                              "#dc3545",
+                              function () {},
+                              "150px"
+                            );
+                            const refuse = createGameButton(
+                              "მენტორი დავრჩები",
+                              "#dc3545",
+                              function () {},
+                              "150px"
+                            );
 
-                      let hakaton = document.createElement("button");
-                      hakaton.innerText = "წავიდე ჰაკათონზე";
-                      hakaton.style.cssText = `
-                        padding: 15px 25px;
-                        background-color: #dc3545; 
-                        color: white;
-                        border: none;
-                        border-radius: 8px;
-                        font-size: 16px;
-                        cursor: pointer;
-                        font-weight: bold;
-                        transition: transform 0.2s;
-                        width: 150px;
-                      `;
-                      hakaton.onmouseover = () =>
-                        (hakaton.style.transform = "scale(1.05)");
-                      hakaton.onmouseout = () =>
-                        (hakaton.style.transform = "scale(1)");
-                      hakaton.onclick = () => {};
+                            hakatonOrLider.appendChild(becomelid);
+                            hakatonOrLider.appendChild(hakaton);
+                            hakatonOrLider.appendChild(refuse);
+                            document.body.appendChild(hakatonOrLider);
 
-                      let refuse = document.createElement("button");
-                      refuse.innerText = "მენტორი დავრჩები";
-                      refuse.style.cssText = `
-                        padding: 15px 25px;
-                        background-color: #dc3545; 
-                        color: white;
-                        border: none;
-                        border-radius: 8px;
-                        font-size: 16px;
-                        cursor: pointer;
-                        font-weight: bold;
-                        transition: transform 0.2s;
-                        width: 150px;
-                      `;
-                      refuse.onmouseover = () =>
-                        (refuse.style.transform = "scale(1.05)");
-                      refuse.onmouseout = () =>
-                        (refuse.style.transform = "scale(1)");
-                      refuse.onclick = () => {};
+                            anime({
+                              targets: hakatonOrLider,
+                              opacity: [0, 1],
+                              translateY: [20, 0],
+                              duration: 1000,
+                            });
+                          }
+                        },
+                        "150px"
+                      );
 
-                      hakatonOrLider.appendChild(becomelid);
-                      hakatonOrLider.appendChild(hakaton);
-                      hakatonOrLider.appendChild(refuse);
+                      const notbement = createGameButton(
+                        "არა",
+                        "#dc3545",
+                        function () {
+                          becomeMentorOrNo.style.display = "none";
+                          index = 0;
+                          loopAnimation(
+                            [
+                              "ცუდია რომ არ მოგინდა მენტორი გამხდარიყავი",
+                              "ამიტომაც დაისჯები და",
+                              "ცხოვრებას თვიდან დაიწყებ",
+                            ],
+                            40,
+                            100,
+                            1000,
+                            function () {
+                              createRestartButton();
+                            }
+                          );
+                        },
+                        "150px"
+                      );
 
-                      document.body.appendChild(hakatonOrLider);
+                      becomeMentorOrNo.appendChild(bement);
+                      becomeMentorOrNo.appendChild(notbement);
+                      document.body.appendChild(becomeMentorOrNo);
 
                       anime({
-                        targets: hakatonOrLider,
+                        targets: becomeMentorOrNo,
                         opacity: [0, 1],
                         translateY: [20, 0],
                         duration: 1000,
                       });
                     }
-                  };
+                  },
+                  "150px"
+                );
 
-                  let notbement = document.createElement("button");
-                  notbement.innerText = "არა";
-                  notbement.style.cssText = `
-                    padding: 15px 25px;
-                    background-color: #dc3545; 
-                    color: white;
-                    border: none;
-                    border-radius: 8px;
-                    font-size: 16px;
-                    cursor: pointer;
-                    font-weight: bold;
-                    transition: transform 0.2s;
-                    width: 150px;
-                   `;
-                  notbement.onmouseover = () =>
-                    (notbement.style.transform = "scale(1.05)");
-                  notbement.onmouseout = () =>
-                    (notbement.style.transform = "scale(1)");
+                const no = createGameButton(
+                  "არა",
+                  "#dc3545",
+                  function () {
+                    becomeMentro.style.display = "none";
+                    wrapper.style.display = "none";
+                    img.src = "img/Gemini_Generated_Image_vuwzo2vuwzo2vuwz.png";
+                    playAudioWithTimer(
+                      "audio/sspsurvival-toilet-bowl-flush-toilet-bowl-flush-toilet-water-12430.mp3",
+                      8000
+                    );
 
-                  notbement.onclick = () => {
-                    becomeMentorOrNo.style.display = "none";
-
-                    index = 0; // RESET INDEX
+                    index = 0;
                     loopAnimation(
-                      [
-                        "ცუდია რომ არ მოგინდა მენტორი გამხდარიყავი",
-                        "ამიტომაც დაისჯები და",
-                        "ცხოვრებას თვიდან დაიწყებ",
-                      ],
+                      ["შენ ჩარეცხე შენი ნიჭი"],
                       40,
                       100,
-                      1000,
+                      600,
                       function () {
                         createRestartButton();
-                      },
+                      }
                     );
-                  };
-
-                  becomeMentorOrNo.appendChild(bement);
-                  becomeMentorOrNo.appendChild(notbement);
-
-                  document.body.appendChild(becomeMentorOrNo);
-
-                  anime({
-                    targets: becomeMentorOrNo,
-                    opacity: [0, 1],
-                    translateY: [20, 0],
-                    duration: 1000,
-                  });
-                }
-              };
-
-              let no = document.createElement("button");
-              no.innerText = "არა";
-              no.style.cssText = `
-                padding: 15px 25px;
-                background-color: #dc3545; 
-                color: white;
-                border: none;
-                border-radius: 8px;
-                font-size: 16px;
-                cursor: pointer;
-                font-weight: bold;
-                transition: transform 0.2s;
-                width: 150px;
-               `;
-              no.onmouseover = () => (no.style.transform = "scale(1.05)");
-              no.onmouseout = () => (no.style.transform = "scale(1)");
-
-              no.onclick = () => {
-                becomeMentro.style.display = "none";
-                wrapper.style.display = "none";
-                img.src = "img/Gemini_Generated_Image_vuwzo2vuwzo2vuwz.png";
-                playAudioWithTimer(
-                  "audio/sspsurvival-toilet-bowl-flush-toilet-bowl-flush-toilet-water-12430.mp3",
-                  8000,
-                );
-
-                index = 0; // RESET INDEX
-                loopAnimation(
-                  ["შენ ჩარეცხე შენი ნიჭი"],
-                  40,
-                  100,
-                  600,
-                  function () {
-                    createRestartButton();
                   },
+                  "150px"
                 );
-              };
 
-              becomeMentro.appendChild(yes);
-              becomeMentro.appendChild(no);
+                becomeMentro.appendChild(yes);
+                becomeMentro.appendChild(no);
+                document.body.appendChild(becomeMentro);
 
-              document.body.appendChild(becomeMentro);
+                anime({
+                  targets: becomeMentro,
+                  opacity: [0, 1],
+                  translateY: [20, 0],
+                  duration: 1000,
+                });
+              }
+            },
+            "200px"
+          );
 
-              anime({
-                targets: becomeMentro,
-                opacity: [0, 1],
-                translateY: [20, 0],
-                duration: 1000,
-              });
-            }
-          };
+          // --- ღილაკი: გავხდე ლიდერი ---
+          const beLider = createGameButton(
+            "გავხდე ლიდერი",
+            "#ffc107",
+            function () {
+              beMnetorOrLidder.style.display = "none";
+              mainText.style.cssText = `
+              font-size: 2em;
+              width: 100%;
+              margin: 0px;
+              margin-top: 100px;
+              color: white;
+              text-align: center;
+              background-color: transparent;
+              border-radius: 0px;
+              box-shadow: none;
+              padding: 0px;
+            `;
 
-          // --- LEADER LOGIC (UPDATED) ---
-          const beLider = document.createElement("button");
-          beLider.innerText = "გავხდე ლიდერი";
-          beLider.style.cssText = `
-            padding: 15px 25px;
-            background-color: #ffc107; 
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.2s;
-            width: 200px;
-          `;
-          beLider.onmouseover = () => (beLider.style.transform = "scale(1.05)");
-          beLider.onmouseout = () => (beLider.style.transform = "scale(1)");
+              index = 0;
+              loopAnimation(
+                ["დარწმუნებული ხააარ?"],
+                40,
+                100,
+                1000,
+                showConfirmLeader
+              );
 
-          beLider.onclick = () => {
-            beMnetorOrLidder.style.display = "none";
-
-            index = 0; // RESET INDEX
-            loopAnimation(
-              ["დარწმუნებული ხააარ?"],
-              40,
-              100,
-              1000,
-              showConfirmLeader,
-            );
-
-            function showConfirmLeader() {
-              let becomeLiderDiv = document.createElement("div");
-              becomeLiderDiv.style.cssText = `
+              function showConfirmLeader() {
+                let becomeLiderDiv = document.createElement("div");
+                becomeLiderDiv.style.cssText = `
                 display: flex; 
                 gap: 50px; 
                 opacity: 0; 
@@ -631,44 +608,29 @@ function showChoiceButtons() {
                 z-index: 1000;
               `;
 
-              let yes = document.createElement("button");
-              yes.innerText = "კი";
-              yes.style.cssText = `
-                padding: 15px 25px;
-                background-color: #28a745; 
-                color: white;
-                border: none;
-                border-radius: 8px;
-                font-size: 16px;
-                cursor: pointer;
-                font-weight: bold;
-                transition: transform 0.2s;
-                width: 150px;
-              `;
-              yes.onmouseover = () => (yes.style.transform = "scale(1.05)");
-              yes.onmouseout = () => (yes.style.transform = "scale(1)");
+                const yes = createGameButton(
+                  "კი",
+                  "#28a745",
+                  function () {
+                    becomeLiderDiv.style.display = "none";
+                    wrapper.style.display = "none";
 
-              yes.onclick = () => {
-                becomeLiderDiv.style.display = "none";
-                wrapper.style.display = "none";
+                    index = 0;
+                    loopAnimation(
+                      [
+                        "შენ გაკეთე სწორი გადაწყვეტილება",
+                        "მაგრამ სანამ ლიდერი გახდები ჯერ მინი ლიდერი იქნები",
+                        "ახლა გინდა გახდე ლიდერი",
+                      ],
+                      40,
+                      100,
+                      1000,
+                      showMiniLeaderChoice
+                    );
 
-                // აქ იწყება მინი ლიდერის ლოგიკა
-                index = 0;
-                loopAnimation(
-                  [
-                    "შენ გაკეთე სწორი გადაწყვეტილება",
-                    "მაგრამ სანამ ლიდერი გახდები ჯერ მინი ლიდერი იქნები",
-                    "ახლა გინდა გახდე ლიდერი",
-                  ],
-                  40,
-                  100,
-                  1000,
-                  showMiniLeaderChoice,
-                );
-
-                function showMiniLeaderChoice() {
-                  let miniLeaderDiv = document.createElement("div");
-                  miniLeaderDiv.style.cssText = `
+                    function showMiniLeaderChoice() {
+                      let miniLeaderDiv = document.createElement("div");
+                      miniLeaderDiv.style.cssText = `
                       display: flex; 
                       gap: 50px; 
                       opacity: 0; 
@@ -680,44 +642,28 @@ function showChoiceButtons() {
                       z-index: 1000;
                     `;
 
-                  let beMini = document.createElement("button");
-                  beMini.innerText = "კი";
-                  beMini.style.cssText = `
-                      padding: 15px 25px;
-                      background-color: #dc3545; 
-                      color: white;
-                      border: none;
-                      border-radius: 8px;
-                      font-size: 16px;
-                      cursor: pointer;
-                      font-weight: bold;
-                      transition: transform 0.2s;
-                      width: 150px;
-                     `;
-                  beMini.onmouseover = () =>
-                    (beMini.style.transform = "scale(1.05)");
-                  beMini.onmouseout = () =>
-                    (beMini.style.transform = "scale(1)");
+                      const beMini = createGameButton(
+                        "კი",
+                        "#dc3545",
+                        function () {
+                          miniLeaderDiv.style.display = "none";
 
-                  beMini.onclick = () => {
-                    miniLeaderDiv.style.display = "none";
+                          index = 0;
+                          loopAnimation(
+                            [
+                              "კარგი გადაწყვეტილებაა შენ ახლა გახდი ლიდერი",
+                              "შენ ახლა გაქ არჩევანი გახდე მენტორი ან წახვიდე ჰაკათონზე",
+                              "ჰაკათონის მერე ისევ შეძლებ მენტორი გახდე",
+                            ],
+                            40,
+                            100,
+                            1000,
+                            showMentorOrHackathon
+                          );
 
-                    index = 0;
-                    loopAnimation(
-                      [
-                        "კარგი გადაწყვეტილებაა შენ ახლა გახდი ლიდერი",
-                        "შენ ახლა გაქ არჩევანი გახდე მენტორი ან წახვიდე ჰაკათონზე",
-                        "ჰაკათონის მერე ისევ შეძლებ მენტორი გახდე",
-                      ],
-                      40,
-                      100,
-                      1000,
-                      showMentorOrHackathon,
-                    );
-
-                    function showMentorOrHackathon() {
-                      let hakatonOrMentor = document.createElement("div");
-                      hakatonOrMentor.style.cssText = `
+                          function showMentorOrHackathon() {
+                            let hakatonOrMentor = document.createElement("div");
+                            hakatonOrMentor.style.cssText = `
                               display: flex; 
                               gap: 50px; 
                               opacity: 0; 
@@ -729,186 +675,122 @@ function showChoiceButtons() {
                               z-index: 1000;
                             `;
 
-                      let becomeMent = document.createElement("button");
-                      becomeMent.innerText = "გავხდე მენტორი";
-                      becomeMent.style.cssText = `
-                              padding: 15px 25px;
-                              background-color: #dc3545; 
-                              color: white;
-                              border: none;
-                              border-radius: 8px;
-                              font-size: 16px;
-                              cursor: pointer;
-                              font-weight: bold;
-                              transition: transform 0.2s;
-                              width: 150px;
-                            `;
-                      becomeMent.onmouseover = () =>
-                        (becomeMent.style.transform = "scale(1.05)");
-                      becomeMent.onmouseout = () =>
-                        (becomeMent.style.transform = "scale(1)");
-                      becomeMent.onclick = () => {};
+                            const becomeMent = createGameButton(
+                              "გავხდე მენტორი",
+                              "#dc3545",
+                              function () {},
+                              "150px"
+                            );
+                            const hakaton = createGameButton(
+                              "წავიდე ჰაკათონზე",
+                              "#dc3545",
+                              function () {},
+                              "150px"
+                            );
+                            const refuse = createGameButton(
+                              "ლიდერი დავრჩები",
+                              "#dc3545",
+                              function () {},
+                              "150px"
+                            );
 
-                      let hakaton = document.createElement("button");
-                      hakaton.innerText = "წავიდე ჰაკათონზე";
-                      hakaton.style.cssText = `
-                              padding: 15px 25px;
-                              background-color: #dc3545; 
-                              color: white;
-                              border: none;
-                              border-radius: 8px;
-                              font-size: 16px;
-                              cursor: pointer;
-                              font-weight: bold;
-                              transition: transform 0.2s;
-                              width: 150px;
-                            `;
-                      hakaton.onmouseover = () =>
-                        (hakaton.style.transform = "scale(1.05)");
-                      hakaton.onmouseout = () =>
-                        (hakaton.style.transform = "scale(1)");
-                      hakaton.onclick = () => {};
+                            hakatonOrMentor.appendChild(becomeMent);
+                            hakatonOrMentor.appendChild(hakaton);
+                            hakatonOrMentor.appendChild(refuse);
+                            document.body.appendChild(hakatonOrMentor);
 
-                      let refuse = document.createElement("button");
-                      refuse.innerText = "ლიდერი დავრჩები";
-                      refuse.style.cssText = `
-                              padding: 15px 25px;
-                              background-color: #dc3545; 
-                              color: white;
-                              border: none;
-                              border-radius: 8px;
-                              font-size: 16px;
-                              cursor: pointer;
-                              font-weight: bold;
-                              transition: transform 0.2s;
-                              width: 150px;
-                            `;
-                      refuse.onmouseover = () =>
-                        (refuse.style.transform = "scale(1.05)");
-                      refuse.onmouseout = () =>
-                        (refuse.style.transform = "scale(1)");
-                      refuse.onclick = () => {};
+                            anime({
+                              targets: hakatonOrMentor,
+                              opacity: [0, 1],
+                              translateY: [20, 0],
+                              duration: 1000,
+                            });
+                          }
+                        },
+                        "150px"
+                      );
 
-                      hakatonOrMentor.appendChild(becomeMent);
-                      hakatonOrMentor.appendChild(hakaton);
-                      hakatonOrMentor.appendChild(refuse);
+                      const notMini = createGameButton(
+                        "არა",
+                        "#dc3545",
+                        function () {
+                          miniLeaderDiv.style.display = "none";
+                          index = 0;
+                          loopAnimation(
+                            [
+                              "ცუდია რომ არ მოგინდა ლიდერი გამხდარიყავი",
+                              "ამიტომაც დაისჯები და",
+                              "ცხოვრებას თვიდან დაიწყებ",
+                            ],
+                            40,
+                            100,
+                            1000,
+                            function () {
+                              createRestartButton();
+                            }
+                          );
+                        },
+                        "150px"
+                      );
 
-                      document.body.appendChild(hakatonOrMentor);
+                      miniLeaderDiv.appendChild(beMini);
+                      miniLeaderDiv.appendChild(notMini);
+                      document.body.appendChild(miniLeaderDiv);
 
                       anime({
-                        targets: hakatonOrMentor,
+                        targets: miniLeaderDiv,
                         opacity: [0, 1],
                         translateY: [20, 0],
                         duration: 1000,
                       });
                     }
-                  };
+                  },
+                  "150px"
+                );
 
-                  let notMini = document.createElement("button");
-                  notMini.innerText = "არა";
-                  notMini.style.cssText = `
-                      padding: 15px 25px;
-                      background-color: #dc3545; 
-                      color: white;
-                      border: none;
-                      border-radius: 8px;
-                      font-size: 16px;
-                      cursor: pointer;
-                      font-weight: bold;
-                      transition: transform 0.2s;
-                      width: 150px;
-                     `;
-                  notMini.onmouseover = () =>
-                    (notMini.style.transform = "scale(1.05)");
-                  notMini.onmouseout = () =>
-                    (notMini.style.transform = "scale(1)");
+                const no = createGameButton(
+                  "არა",
+                  "#dc3545",
+                  function () {
+                    becomeLiderDiv.style.display = "none";
+                    wrapper.style.display = "none";
+                    img.src = "img/Gemini_Generated_Image_vuwzo2vuwzo2vuwz.png";
+                    playAudioWithTimer(
+                      "audio/sspsurvival-toilet-bowl-flush-toilet-bowl-flush-toilet-water-12430.mp3",
+                      8000
+                    );
 
-                  notMini.onclick = () => {
-                    miniLeaderDiv.style.display = "none";
                     index = 0;
                     loopAnimation(
-                      [
-                        "ცუდია რომ არ მოგინდა ლიდერი გამხდარიყავი",
-                        "ამიტომაც დაისჯები და",
-                        "ცხოვრებას თვიდან დაიწყებ",
-                      ],
+                      ["შენ ჩარეცხე შენი ნიჭი"],
                       40,
                       100,
-                      1000,
+                      600,
                       function () {
                         createRestartButton();
-                      },
+                      }
                     );
-                  };
-
-                  miniLeaderDiv.appendChild(beMini);
-                  miniLeaderDiv.appendChild(notMini);
-                  document.body.appendChild(miniLeaderDiv);
-
-                  anime({
-                    targets: miniLeaderDiv,
-                    opacity: [0, 1],
-                    translateY: [20, 0],
-                    duration: 1000,
-                  });
-                }
-              };
-
-              let no = document.createElement("button");
-              no.innerText = "არა";
-              no.style.cssText = `
-                padding: 15px 25px;
-                background-color: #dc3545; 
-                color: white;
-                border: none;
-                border-radius: 8px;
-                font-size: 16px;
-                cursor: pointer;
-                font-weight: bold;
-                transition: transform 0.2s;
-                width: 150px;
-               `;
-              no.onmouseover = () => (no.style.transform = "scale(1.05)");
-              no.onmouseout = () => (no.style.transform = "scale(1)");
-
-              no.onclick = () => {
-                becomeLiderDiv.style.display = "none";
-                wrapper.style.display = "none";
-                img.src = "img/Gemini_Generated_Image_vuwzo2vuwzo2vuwz.png";
-                playAudioWithTimer(
-                  "audio/sspsurvival-toilet-bowl-flush-toilet-bowl-flush-toilet-water-12430.mp3",
-                  8000,
-                );
-
-                index = 0; // RESET INDEX
-                loopAnimation(
-                  ["შენ ჩარეცხე შენი ნიჭი"],
-                  40,
-                  100,
-                  600,
-                  function () {
-                    createRestartButton();
                   },
+                  "150px"
                 );
-              };
 
-              becomeLiderDiv.appendChild(yes);
-              becomeLiderDiv.appendChild(no);
+                becomeLiderDiv.appendChild(yes);
+                becomeLiderDiv.appendChild(no);
+                document.body.appendChild(becomeLiderDiv);
 
-              document.body.appendChild(becomeLiderDiv);
-
-              anime({
-                targets: becomeLiderDiv,
-                opacity: [0, 1],
-                translateY: [20, 0],
-                duration: 1000,
-              });
-            }
-          };
+                anime({
+                  targets: becomeLiderDiv,
+                  opacity: [0, 1],
+                  translateY: [20, 0],
+                  duration: 1000,
+                });
+              }
+            },
+            "200px"
+          );
 
           beMnetorOrLidder.appendChild(beMentor);
           beMnetorOrLidder.appendChild(beLider);
-
           document.body.appendChild(beMnetorOrLidder);
 
           anime({
@@ -918,46 +800,31 @@ function showChoiceButtons() {
             duration: 1000,
           });
         }
-      };
+      }); // აქ არაფერი არ გადაგვაქვს, რადგან width არ გვჭირდება
 
-      const bedLearn = document.createElement("button");
-      bedLearn.innerText = "ზერელე სწავლა";
-      bedLearn.style.cssText = `
-        padding: 15px 25px;
-        background-color: #ffc107; 
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 16px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: transform 0.2s;
-      `;
-      bedLearn.onmouseover = () => (bedLearn.style.transform = "scale(1.05)");
-      bedLearn.onmouseout = () => (bedLearn.style.transform = "scale(1)");
+      // --- ღილაკი: ზერელე სწავლა ---
+      const bedLearn = createGameButton(
+        "ზერელე სწავლა",
+        "#ffc107",
+        function () {
+          img.src = "img/angry.png";
+          act2Container.style.display = "none";
+          playAudioWithTimer("audio/luse.mp3", 6000);
+          wrapper.style.marginBottom = "0px";
+          wrapper.style.color = "white";
 
-      bedLearn.onclick = () => {
-        img.src = "img/angry.png";
+          index = 0;
+          loopAnimation(
+            ["შენ ახლა გაქ 2 ვარიანტი"],
+            40,
+            100,
+            1000,
+            act2LuseChoise
+          );
 
-        act2Container.style.display = "none";
-
-        playAudioWithTimer("audio/luse.mp3", 6000);
-
-        wrapper.style.marginBottom = "0px";
-        wrapper.style.color = "white";
-
-        index = 0; // RESET INDEX
-        loopAnimation(
-          ["შენ ახლა გაქ 2 ვარიანტი"],
-          40,
-          100,
-          1000,
-          act2LuseChoise,
-        );
-
-        function act2LuseChoise() {
-          const act2LuseChoiseConteriner = document.createElement("div");
-          act2LuseChoiseConteriner.style.cssText = `
+          function act2LuseChoise() {
+            const act2LuseChoiseConteriner = document.createElement("div");
+            act2LuseChoiseConteriner.style.cssText = `
             display: flex; 
             gap: 500px; 
             opacity: 0; 
@@ -969,128 +836,94 @@ function showChoiceButtons() {
             z-index: 1000;
           `;
 
-          const act2LuseChoiseBed = document.createElement("button");
-          act2LuseChoiseBed.innerText = "ზარმაცობა";
-          act2LuseChoiseBed.style.cssText = `
-            padding: 15px 25px;
-            background-color: #dc3545; 
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.2s;
-          `;
-          act2LuseChoiseBed.onmouseover = () =>
-            (act2LuseChoiseBed.style.transform = "scale(1.05)");
-          act2LuseChoiseBed.onmouseout = () =>
-            (act2LuseChoiseBed.style.transform = "scale(1)");
-
-          act2LuseChoiseBed.onclick = () => {
-            act2LuseChoiseConteriner.style.display = "none";
-            img.src = "img/opened.png";
-            mainText.style.color = "red";
-            mainText.style.fontSize = "2rem";
-
-            index = 0; // RESET INDEX
-            loopAnimation(
-              ["შენ", "აირჩიე", "გზა", "ლუზერებისკენ", "GAME OVER!!"],
-              300,
-              200,
-              200,
+            const act2LuseChoiseBed = createGameButton(
+              "ზარმაცობა",
+              "#dc3545",
               function () {
-                createRestartButton();
-              },
-            );
-          };
-
-          const act2LuseChoiseGood = document.createElement("button");
-          act2LuseChoiseGood.innerText = "სხვა პროფესიის პოვნა";
-          act2LuseChoiseGood.style.cssText = `
-            padding: 15px 25px;
-            background-color: #ffc107; 
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: transform 0.2s;
-          `;
-          act2LuseChoiseGood.onmouseover = () =>
-            (act2LuseChoiseGood.style.transform = "scale(1.05)");
-          act2LuseChoiseGood.onmouseout = () =>
-            (act2LuseChoiseGood.style.transform = "scale(1)");
-
-          act2LuseChoiseGood.onclick = () => {
-            function findeprof() {
-              let life = Math.floor(Math.random() * 3);
-              if (life != 1) {
                 act2LuseChoiseConteriner.style.display = "none";
                 img.src = "img/opened.png";
-                mainText.style.color = "red";
-                mainText.style.fontSize = "2rem";
 
-                index = 0; // RESET INDEX
+                index = 0;
                 loopAnimation(
-                  [
-                    "შენ",
-                    "არ",
-                    "გაგიმართლა",
-                    "და",
-                    "სამსახური",
-                    "ვერ",
-                    "იპოვე",
-                    "შენ არ გაგიმართლა და ვერ იპოვე სამსახური",
-                  ],
+                  ["შენ", "აირჩიე", "გზა", "ლუზერებისკენ", "GAME OVER!!"],
                   300,
                   200,
                   200,
                   function () {
                     createRestartButton();
-                  },
-                );
-              } else if (life == 1) {
-                act2LuseChoiseConteriner.style.display = "none";
-                wrapper.style.fontSize = "1.18rem";
-                img.src = "img/opened.png";
-
-                index = 0; // RESET INDEX
-                loopAnimation(
-                  [
-                    "შენ იპოვე პროფესია მაგრამ რადგანაც GOA-ში ზარმაცობდი დიდი ანაზღაურება არ გქონდა ამიტომა შენ გახდი სამინისტროს მონა",
-                  ],
-                  300,
-                  200,
-                  200,
-                  function () {
-                    createRestartButton();
-                  },
+                  }
                 );
               }
-            }
+            );
 
-            findeprof();
-          };
+            const act2LuseChoiseGood = createGameButton(
+              "სხვა პროფესიის პოვნა",
+              "#ffc107",
+              function () {
+                function findeprof() {
+                  let life = Math.floor(Math.random() * 3);
+                  if (life != 1) {
+                    act2LuseChoiseConteriner.style.display = "none";
+                    img.src = "img/opened.png";
 
-          act2LuseChoiseConteriner.appendChild(act2LuseChoiseBed);
-          act2LuseChoiseConteriner.appendChild(act2LuseChoiseGood);
+                    index = 0;
+                    loopAnimation(
+                      [
+                        "შენ",
+                        "არ",
+                        "გაგიმართლა",
+                        "და",
+                        "სამსახური",
+                        "ვერ",
+                        "იპოვე",
+                        "შენ არ გაგიმართლა და ვერ იპოვე სამსახური",
+                      ],
+                      300,
+                      200,
+                      200,
+                      function () {
+                        createRestartButton();
+                      }
+                    );
+                  } else if (life == 1) {
+                    act2LuseChoiseConteriner.style.display = "none";
+                    wrapper.style.fontSize = "1.18rem";
+                    img.src = "img/opened.png";
 
-          document.body.appendChild(act2LuseChoiseConteriner);
+                    index = 0;
+                    loopAnimation(
+                      [
+                        "შენ იპოვე პროფესია მაგრამ რადგანაც GOA-ში ზარმაცობდი დიდი ანაზღაურება არ გქონდა ამიტომა შენ გახდი სამინისტროს მონა",
+                      ],
+                      300,
+                      200,
+                      200,
+                      function () {
+                        createRestartButton();
+                      }
+                    );
+                  }
+                }
+                findeprof();
+              }
+            );
 
-          anime({
-            targets: act2LuseChoiseConteriner,
-            opacity: [0, 1],
-            translateY: [20, 0],
-            duration: 1000,
-          });
+            act2LuseChoiseConteriner.appendChild(act2LuseChoiseBed);
+            act2LuseChoiseConteriner.appendChild(act2LuseChoiseGood);
+            document.body.appendChild(act2LuseChoiseConteriner);
+
+            anime({
+              targets: act2LuseChoiseConteriner,
+              opacity: [0, 1],
+              translateY: [20, 0],
+              duration: 1000,
+            });
+          }
         }
-      };
+      );
 
       act2Container.appendChild(goodLearn);
       act2Container.appendChild(bedLearn);
-
       document.body.appendChild(act2Container);
 
       anime({
@@ -1100,44 +933,30 @@ function showChoiceButtons() {
         duration: 1000,
       });
     }
-  };
+  });
 
-  const btnRoblox = document.createElement("button");
-  btnRoblox.innerText = "არ მირჩევნია Roblox-ი ვითამაშო";
-  btnRoblox.style.cssText = `
-    padding: 15px 25px;
-    background-color: #dc3545;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: transform 0.2s;
-  `;
-  btnRoblox.onmouseover = () => (btnRoblox.style.transform = "scale(1.05)");
-  btnRoblox.onmouseout = () => (btnRoblox.style.transform = "scale(1)");
+  // --- ღილაკი: Roblox ---
+  const btnRoblox = createGameButton(
+    "არ მირჩევნია Roblox-ი ვითამაშო",
+    "#dc3545",
+    function () {
+      container.style.display = "none";
 
-  btnRoblox.onclick = () => {
-    container.style.display = "none";
-    mainText.style.color = "red";
-    mainText.style.fontSize = "2rem";
-
-    index = 0; // RESET INDEX
-    loopAnimation(
-      ["შენ", "აირჩიე", "გზა", "ლუზერებისკენ", "GAME OVER!!"],
-      300,
-      200,
-      200,
-      function () {
-        createRestartButton();
-      },
-    );
-  };
+      index = 0;
+      loopAnimation(
+        ["შენ", "აირჩიე", "გზა", "ლუზერებისკენ", "GAME OVER!!"],
+        300,
+        200,
+        200,
+        function () {
+          createRestartButton();
+        }
+      );
+    }
+  );
 
   container.appendChild(btnGoa);
   container.appendChild(btnRoblox);
-
   document.body.appendChild(container);
 
   anime({
@@ -1149,7 +968,7 @@ function showChoiceButtons() {
   });
 }
 
-// საწყისი ღილაკის ლოგიკა
+// 3. საწყისი ღილაკის ლოგიკა
 btn.addEventListener("click", function () {
   btn.style.display = "none";
   if (img) img.src = "img/opened.png";
@@ -1161,18 +980,18 @@ btn.addEventListener("click", function () {
 
   playAudioWithTimer(
     "audio/the-sound-of-a-mechanical-keyboard-on-which-text-is-typed-windows.mp3",
-    1000, //29
+    1000
   );
 
-  index = 0; // RESET INDEX
+  index = 0;
   loopAnimation(
     [
       "hello",
-      // "დღეები ერთმანეთს ჰგავდა: გათენებამდე კომპიუტერულ თამაშებში ჩაკარგული, ენერგიისგან დაცლილი და რეალურ სამყაროს სრულად მოწყვეტილი ვიყავი. ჩემი ცხოვრების წესი საშინელებას დაემსგავსა, სადაც მოუწესრიგებელი ძილი და უმიზნოდ გაფლანგული საათები ერთადერთ რეალობად მექცა. ერთფეროვან სქროლვაში მოულოდნელად GOA აკადემიის რეკლამას წავაწყდი, რომელმაც ჩემში მიძინებული ინტერესი — პროგრამირება და ნამდვილი საქმის კეთება — ისევ გააღვიძა. მივხვდი, რომ თამაშში მიღწეული ვირტუალური დონეების ნაცვლად, შემეძლო საკუთარი თავი რეალურ ცხოვრებაში, ვებ-დეველოპმენტსა და კოდის წერაში განმევითარებინა. ახლა მაგიდასთან ვზივარ, ეკრანზე რეგისტრაციის ღილაკი ანათებს და ვგრძნობ, რომ ეს ჩემი შანსია, საბოლოოდ დავაღწიო თავი ამ ქაოსს. ღრმად ჩავისუნთქე, თითი მაუსის ღილაკზე მაქვს მიბჯენილი და ვფიქრობ, მზად ვარ თუ არა, რომ ჩემი დრო თამაშის ნაცვლად მომავლის მშენებლობას დავუთმო.",
+      //"დღეები ერთმანეთს ჰგავდა: გათენებამდე კომპიუტერულ თამაშებში ჩაკარგული, ენერგიისგან დაცლილი და რეალურ სამყაროს სრულად მოწყვეტილი ვიყავი. ჩემი ცხოვრების წესი საშინელებას დაემსგავსა, სადაც მოუწესრიგებელი ძილი და უმიზნოდ გაფლანგული საათები ერთადერთ რეალობად მექცა. ერთფეროვან სქროლვაში მოულოდნელად GOA აკადემიის რეკლამას წავაწყდი, რომელმაც ჩემში მიძინებული ინტერესი — პროგრამირება და ნამდვილი საქმის კეთება — ისევ გააღვიძა. მივხვდი, რომ თამაშში მიღწეული ვირტუალური დონეების ნაცვლად, შემეძლო საკუთარი თავი რეალურ ცხოვრებაში, ვებ-დეველოპმენტსა და კოდის წერაში განმევითარებინა. ახლა მაგიდასთან ვზივარ, ეკრანზე რეგისტრაციის ღილაკი ანათებს და ვგრძნობ, რომ ეს ჩემი შანსია, საბოლოოდ დავაღწიო თავი ამ ქაოსს. ღრმად ჩავისუნთქე, თითი მაუსის ღილაკზე მაქვს მიბჯენილი და ვფიქრობ, მზად ვარ თუ არა, რომ ჩემი დრო თამაშის ნაცვლად მომავლის მშენებლობას დავუთმო.",
     ],
     40,
     100,
     1000,
-    showChoiceButtons,
+    showChoiceButtons
   );
 });
