@@ -455,19 +455,94 @@ function showChoiceButtons() {
                             const becomelid = createGameButton(
                               "გავხდე ლიდერი",
                               "#dc3545",
-                              function () {},
+                              function () {
+                                hakatonOrLider.style.display='none'
+                              },
                               "150px"
                             );
                             const hakaton = createGameButton(
                               "წავიდე ჰაკათონზე",
                               "#dc3545",
-                              function () {},
+                              function () {
+                                hakatonOrLider.style.display='none'
+                                img.src = "img/hackhaton.png";
+                                index=0
+                                loopAnimation([
+                                  'კარგი გადაწყვეტილებაა,  შენ მიხვედი  ჰაკათონზე',
+                                  'ახლა  მოგიწევს ჩააბარო გამოცდა'
+                                ],
+                              40,
+                              100,
+                              1000,
+                              )
+                              },
                               "150px"
                             );
+
+                          function hackhatonQuiz() {
+                            let quizQuestions = document.createElement("div");
+                            let  count=0
+                            hakatonOrLider.style.cssText = `
+                            display: flex; 
+                            gap: 20px; 
+                            opacity: 0; 
+                            justify-content: center;
+                            position: absolute; 
+                            bottom: 350px; 
+                            left: 0; 
+                            width: 100%;
+                            z-index: 1000;
+                          `;
+                          let quiestion=document.createElement('p')
+                          quiestion.innerHTML='true or false'
+                            var answer1 = createGameButton(
+                              "const-ით გამოცხადებული ცვლადის შეცვლა შეგვიძ₾ია",
+                              "#dc3545",
+                              function () {
+                                answer1=createGameButton(
+                                  "![] == 0",
+                                  "#dc3545",
+                                  function(){
+                                    
+                                  }
+                                )
+                                answer2=createGameButton(
+                                  "[] == 0",
+                                  "#dc3545",
+                                  function(){
+                                    count++
+                                  }
+                                )
+                              },
+                              "150px"
+                            );
+                          
+                            var answer2 = createGameButton(
+                              "const-ით გამოცხადებული ცვლადის შეცვლა არ შეგვიძ₾ია",
+                              "#dc3545",
+                              function () {
+                                count++
+                              },
+                              "150px"
+                            );
+
+
+                          quizQuestions.appendChild(quiestion)
+                          }
+
+
+
+
+
+
+
                             const refuse = createGameButton(
                               "მენტორი დავრჩები",
                               "#dc3545",
-                              function () {},
+                              function () {
+                                hakatonOrLider.style.display='none'
+
+                              },
                               "150px"
                             );
 
@@ -572,19 +647,7 @@ function showChoiceButtons() {
             "#ffc107",
             function () {
               beMnetorOrLidder.style.display = "none";
-              mainText.style.cssText = `
-              font-size: 2em;
-              width: 100%;
-              margin: 0px;
-              margin-top: 100px;
-              color: white;
-              text-align: center;
-              background-color: transparent;
-              border-radius: 0px;
-              box-shadow: none;
-              padding: 0px;
-            `;
-
+  
               index = 0;
               loopAnimation(
                 ["დარწმუნებული ხააარ?"],
