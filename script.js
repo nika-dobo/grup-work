@@ -1,15 +1,15 @@
 // --- 1. ელემენტების მოძებნა ---
 const wrapper = document.querySelector(".text");
 const btn = document.querySelector(".my-btn");
-const audio = document.getElementById("audio");
+// აუდიო ელემენტი კოდში დინამიურად იქმნება, ამიტომ აქ არ არის აუცილებელი
 const mainText = document.getElementById("text");
 const img = document.getElementById("main-img");
 
+let secretCount = 0;
 let index = 0;
 
-// --- 2. დამხმარე ფუნქციები (რეცეპტები) ---
+// --- 2. დამხმარე ფუნქციები ---
 
-// ფუნქცია: ღილაკის შექმნა
 function createGameButton(text, color, onClickAction, width) {
   const button = document.createElement("button");
   button.innerText = text;
@@ -145,14 +145,18 @@ function playAudioWithTimer(src, duration) {
 }
 
 // "თავიდან დაწყების" ღილაკი
-function createRestartButton() {
-  const restartBtn = createGameButton(
-    "ცხოვრების თავიდან დაწყება",
-    "#007bff",
-    function () {
-      location.reload();
-    },
-  );
+function createRestartButton(
+  txt = "ცხოვრების თავიდან დაწყება",
+  secret = false,
+) {
+  if (secret) {
+    secretCount++;
+    console.log(secretCount);
+  }
+
+  const restartBtn = createGameButton(txt, "#007bff", function () {
+    location.reload();
+  });
 
   restartBtn.style.position = "absolute";
   restartBtn.style.bottom = "50px";
@@ -269,6 +273,7 @@ function loopAnimation(
 
 // --- 3. თამაშის ძირითადი სცენარი ---
 
+// საწყისი ანიმაცია
 index = 0;
 loopAnimation(["მოგესალმები", "თქვენ მოხვდით უსასრულო ლუპში"]);
 
@@ -392,7 +397,12 @@ function showChoiceButtons() {
                 a2: "false",
                 correct: 1,
               }, // სწორია: true
-              { q: "რას აბრუნებს 2 + '2' ?", a1: "4", a2: "22", correct: 2 }, // სწორია: "22"
+              {
+                q: "რას აბრუნებს 2 + '2' ?",
+                a1: "4",
+                a2: "22",
+                correct: 2,
+              }, // სწორია: "22"
               {
                 q: "არის თუ არა JavaScript კომპილირებადი ენა?",
                 a1: "კი",
@@ -482,7 +492,7 @@ function showChoiceButtons() {
             beMnetorOrLidder.style.cssText = `
             display: flex; 
             gap: 0px; 
-            opacity: 0; 
+            opacity: 0;
             flex-direction: column;
             justify-content: end;
             align-items: end;
@@ -593,7 +603,54 @@ function showChoiceButtons() {
                               const becomelid = createGameButton(
                                 "გავხდე ლიდერი",
                                 "#dc3545",
-                                function () {},
+                                function () {
+                                  hakatonOrLider.style.display = "none";
+
+                                  index = 0;
+                                  loopAnimation(
+                                    [
+                                      "კარგი გადაწყვეტილებაა",
+                                      "მაგრან სამან ლიდერი გახდები ჯერ მინი ლიდერი უნდა იყო",
+                                    ],
+                                    3000,
+                                    100,
+                                    1000,
+                                    function () {
+                                      index = 0;
+                                      loopAnimation(
+                                        [
+                                          "რადგანაც შენ მინი ლიდერი გახდი",
+                                          "შენ ახლა გახდები ლიდერი",
+                                        ],
+                                        3000,
+                                        100,
+                                        1000,
+                                        function () {
+                                          index = 0;
+                                          loopAnimation(
+                                            [
+                                              "გილოცავ",
+                                              "შენ იმდენად მაგარი გახდი რომ",
+                                              "თვით ნიკა კეშელავა ჩაანაცვლე",
+                                              "შენ ცხოვრებაში უკვე ყველაფერს მიაღწიე",
+                                            ],
+                                            1000,
+                                            100,
+                                            1000,
+                                            function () {
+                                              img.src = "img/change_boss.png";
+
+                                              createRestartButton(
+                                                "ახალ შეგიძლია რეინკარნაცია განიცადო",
+                                                true,
+                                              );
+                                            },
+                                          );
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
                                 "150px",
                               );
 
@@ -811,21 +868,68 @@ function showChoiceButtons() {
                               let hakatonOrMentor =
                                 document.createElement("div");
                               hakatonOrMentor.style.cssText = `
-                              display: flex; 
-                              gap: 50px; 
-                              opacity: 0; 
-                              justify-content: center;
-                              position: absolute; 
-                              bottom: 350px; 
-                              left: 0; 
-                              width: 100%;
-                              z-index: 1000;
-                            `;
+                            display: flex; 
+                            gap: 50px; 
+                            opacity: 0; 
+                            justify-content: center;
+                            position: absolute; 
+                            bottom: 350px; 
+                            left: 0; 
+                            width: 100%;
+                            z-index: 1000;
+                          `;
 
                               const becomeMent = createGameButton(
                                 "გავხდე მენტორი",
                                 "#dc3545",
-                                function () {},
+                                function () {
+                                  hakatonOrMentor.style.display = "none";
+
+                                  index = 0;
+                                  loopAnimation(
+                                    [
+                                      "კარგი გადაწყვეტილებაა",
+                                      "მაგრან სამან ლიდერი გახდები ჯერ მენტორ ასისტენტი უნდა იყო",
+                                    ],
+                                    3000,
+                                    100,
+                                    1000,
+                                    function () {
+                                      index = 0;
+                                      loopAnimation(
+                                        [
+                                          "რადგანაც შენ მენტორ ასისტენტი გახდი",
+                                          "შენ ახლა გახდები მენტორი",
+                                        ],
+                                        3000,
+                                        100,
+                                        1000,
+                                        function () {
+                                          index = 0;
+                                          loopAnimation(
+                                            [
+                                              "გილოცავ",
+                                              "შენ იმდენად მაგარი გახდი რომ",
+                                              "თვით ნიკა კეშელავა ჩაანაცვლე",
+                                              "შენ ცხოვრებაში უკვე ყველაფერს მიაღწიე",
+                                            ],
+                                            100,
+                                            100,
+                                            1000,
+                                            function () {
+                                              img.src = "img/change_boss.png";
+
+                                              createRestartButton(
+                                                "ახალ შეგიძლია რეინკარნაცია განიცადო",
+                                                true,
+                                              );
+                                            },
+                                          );
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
                                 "150px",
                               );
 
@@ -1142,7 +1246,7 @@ function showChoiceButtons() {
   });
 }
 
-// 3. საწყისი ღილაკის ლოგიკა
+// 4. საწყისი ღილაკის ლოგიკა (მთავარი Event Listener)
 btn.addEventListener("click", function () {
   btn.style.display = "none";
   if (img) img.src = "img/opened.png";
