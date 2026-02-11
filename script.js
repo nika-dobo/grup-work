@@ -1,14 +1,11 @@
-// --- 1. ელემენტების მოძებნა ---
 const wrapper = document.querySelector(".text");
 const btn = document.querySelector(".my-btn");
-// აუდიო ელემენტი კოდში დინამიურად იქმნება, ამიტომ აქ არ არის აუცილებელი
 const mainText = document.getElementById("text");
 const img = document.getElementById("main-img");
 
 let secretCount = 0;
 let index = 0;
 
-// --- 2. დამხმარე ფუნქციები ---
 
 function createGameButton(text, color, onClickAction, width) {
   const button = document.createElement("button");
@@ -32,22 +29,7 @@ function createGameButton(text, color, onClickAction, width) {
       ${buttonWidth}
   `;
 
-  button.onmouseover = function () {
-    if (button.style.transform.indexOf("translateX") !== -1) {
-      button.style.transform = "translateX(-50%) scale(1.05)";
-    } else {
-      button.style.transform = "scale(1.05)";
-    }
-  };
-
-  button.onmouseout = function () {
-    if (button.style.transform.indexOf("translateX") !== -1) {
-      button.style.transform = "translateX(-50%) scale(1)";
-    } else {
-      button.style.transform = "scale(1)";
-    }
-  };
-
+ 
   button.onclick = onClickAction;
   return button;
 }
@@ -59,72 +41,12 @@ function triggerGameOverAnimation() {
     2000,
   );
 
-  anime({
-    targets: "body",
-    translateX: [
-      { value: -10, duration: 50 },
-      { value: 10, duration: 50 },
-      { value: -10, duration: 50 },
-      { value: 10, duration: 50 },
-      { value: 0, duration: 50 },
-    ],
-    translateY: [
-      { value: -10, duration: 50 },
-      { value: 10, duration: 50 },
-      { value: -5, duration: 50 },
-      { value: 5, duration: 50 },
-      { value: 0, duration: 50 },
-    ],
-    easing: "linear",
-    duration: 300,
-  });
 
   wrapper.style.color = "red";
-  wrapper.style.textShadow = "3px 3px 0px #00ffff, -3px -3px 0px #ff00ff";
+  wrapper.style.textShadow = "3px 3px 0px #ff0000, -3px -3px 0px #ff7979";
   wrapper.style.fontSize = "2rem";
   wrapper.style.fontWeight = "bold";
 
-  let tl = anime.timeline({
-    targets: ".text",
-    easing: "easeInOutQuad",
-  });
-
-  tl.add({
-    translateX: [
-      { value: -20, duration: 50 },
-      { value: 20, duration: 50 },
-      { value: -20, duration: 50 },
-      { value: 20, duration: 50 },
-      { value: 0, duration: 50 },
-    ],
-    scale: [
-      { value: 1.2, duration: 100, easing: "easeOutExpo" },
-      { value: 1.1, duration: 200 },
-    ],
-    duration: 300,
-  }).add(
-    {
-      skewX: [
-        { value: "20deg", duration: 80 },
-        { value: "-20deg", duration: 80 },
-        { value: "10deg", duration: 50 },
-        { value: "-10deg", duration: 50 },
-        { value: "5deg", duration: 50 },
-        { value: "0deg", duration: 100 },
-      ],
-      opacity: [
-        { value: 0.7, duration: 40 },
-        { value: 1, duration: 40 },
-        { value: 0.6, duration: 40 },
-        { value: 1, duration: 40 },
-      ],
-      filter: [
-        { value: "blur(2px)", duration: 100 },
-        { value: "blur(0px)", duration: 100 },
-      ],
-    },
-    "-=100",
-  );
 }
 
 // აუდიოს ჩართვა ტაიმერით
@@ -154,7 +76,7 @@ function createRestartButton(
     console.log(secretCount);
   }
 
-  const restartBtn = createGameButton(txt, "#007bff", function () {
+  const restartBtn = createGameButton(txt, "#ff0000", function () {
     location.reload();
   });
 
@@ -176,7 +98,6 @@ function createRestartButton(
   });
 }
 
-// ტექსტის ანიმაცია
 function loopAnimation(
   textArr,
   startDuration,
@@ -346,8 +267,8 @@ function showChoiceButtons() {
 
           index = 0;
           loopAnimation(
-            [
-              " GOA-ს აკადემიაში ჩაბარებისას ვიცოდი, რომ ეს ნაბიჯი ჩემს მომავალს შეცვლიდა, ამიტომ პირველივე დღიდან აქტიურად ვსწავლობდი. არცერთ დავალებას ვტოვებდი უყურადღებოდ, რადგან მჯეროდა, რომ დისციპლინა წარმატების საწინდარია. მენტორების დახმარებით რთული მასალა მარტივად ავითვისე და რეიტინგებშიც მალევე დავწინაურდი. ამ შედეგმა საკუთარი თავის რწმენა გამიორმაგა. ახლა ვხვდები, რომ აკადემიაში გატარებული დრო ჩემი პროფესიული ზრდისთვის გადამწყვეტი იყო. რას იზავ შენ?",
+            ['dd'
+              // " GOA-ს აკადემიაში ჩაბარებისას ვიცოდი, რომ ეს ნაბიჯი ჩემს მომავალს შეცვლიდა, ამიტომ პირველივე დღიდან აქტიურად ვსწავლობდი. არცერთ დავალებას ვტოვებდი უყურადღებოდ, რადგან მჯეროდა, რომ დისციპლინა წარმატების საწინდარია. მენტორების დახმარებით რთული მასალა მარტივად ავითვისე და რეიტინგებშიც მალევე დავწინაურდი. ამ შედეგმა საკუთარი თავის რწმენა გამიორმაგა. ახლა ვხვდები, რომ აკადემიაში გატარებული დრო ჩემი პროფესიული ზრდისთვის გადამწყვეტი იყო. რას იზავ შენ?",
             ],
             40,
             100,
@@ -529,10 +450,12 @@ function showChoiceButtons() {
                           index = 0;
                           loopAnimation(
                             [
+                              
+                              "შენ ყველანაირი დაბრკოლება   გადალახე",
+                              "გახდი მინი-ლიდერი, ლიდერი, მენტორ-ასისტენტი, შემდგომ კი მენტორი",
+                              "ეს  ბევრი შრომის შედეგია",
                               "გილოცავ",
-                              "შენ იმდენად მაგარი გახდი რომ",
-                              "თვით ნიკა კეშელავა ჩაანაცვლე",
-                              "შენ ცხოვრებაში უკვე ყველაფერს მიაღწიე",
+                              "შენ ეს შეძელი, თვით ნიკაs კეშელავა ჩაანაცვლე!!",
                             ],
                             40,
                             100,
@@ -583,7 +506,7 @@ function showChoiceButtons() {
                             [
                               "გილოცავ",
                               "შენ იმდენად მაგარი გახდი რომ",
-                              "თვით ნიკა კეშელავა ჩაანაცვლე",
+                              "თვით ნიკაააააm კეშელავა ჩაანაცვლე",
                               "შენ ცხოვრებაში უკვე ყველაფერს მიაღწიე",
                             ],
                             40,
@@ -746,9 +669,9 @@ function showChoiceButtons() {
                                       "კარგი გადაწყვეტილებაა",
                                       "მაგრან სამან ლიდერი გახდები ჯერ მინი ლიდერი უნდა იყო",
                                     ],
-                                    3000,
+                                    400,
                                     100,
-                                    1000,
+                                    500,
                                     function () {
                                       index = 0;
                                       loopAnimation(
@@ -756,24 +679,27 @@ function showChoiceButtons() {
                                           "რადგანაც შენ მინი ლიდერი გახდი",
                                           "შენ ახლა გახდები ლიდერი",
                                         ],
-                                        3000,
+                                        400,
                                         100,
-                                        1000,
+                                        500,
                                         function () {
                                           index = 0;
                                           loopAnimation(
                                             [
-                                              "გილოცავ",
-                                              "შენ იმდენად მაგარი გახდი რომ",
-                                              "თვით ნიკა კეშელავა ჩაანაცვლე",
-                                              "შენ ცხოვრებაში უკვე ყველაფერს მიაღწიე",
+                                              
+                                              "შენ დროთა განმავლობაშ ბევრ  მოსწავლეს დაეხმარე,",
+                                              "გაკვეთილის ჩატარებაც კი შეძელი  დამოუკიდეებლად, ისე რომ ყველას  ჩართული ჰქონდა კამერა",
+                                              "ამიტომ....,",
+                                              "გილოცავ!!!!!!!!+100010  aura",
+                                              "შენ  თვით გოგა ჩალაური ჩაანაცვლე",
+                                              "დირექტორობამდე ორი ნაბიჯი გაკლია...",
                                             ],
-                                            1000,
+                                            600,
                                             100,
                                             1000,
                                             function () {
-                                              img.src = "img/change_boss.png";
-
+                                              img.src = "img/gogaRetired.png";
+                                              playAudioWithTimer('angryGoga.mp3',6000)
                                               createRestartButton(
                                                 "ახალ შეგიძლია რეინკარნაცია განიცადო",
                                                 true,
@@ -843,9 +769,10 @@ function showChoiceButtons() {
                             index = 0;
                             loopAnimation(
                               [
-                                "ცუდია რომ არ მოგინდა მენტორი გამხდარიყავი",
+                                "ცუდია, ცუდია, ცუდიაა ",
+                                "შენ არ მოგინდა მენტორი გამხდარიყავი",
                                 "ამიტომაც დაისჯები და",
-                                "ცხოვრებას თვიდან დაიწყებ",
+                                "ცხოვრებას თავიდან დაიწყებ",
                               ],
                               40,
                               100,
@@ -1023,38 +950,40 @@ function showChoiceButtons() {
                                   loopAnimation(
                                     [
                                       "კარგი გადაწყვეტილებაა",
-                                      "მაგრან სამან ლიდერი გახდები ჯერ მენტორ ასისტენტი უნდა იყო",
+                                      "მაგრან სამან მენტორი გახდები ჯერ მენტორ ასისტენტი უნდა იყო",
                                     ],
-                                    3000,
+                                    500,
                                     100,
-                                    1000,
+                                    600,
                                     function () {
                                       index = 0;
                                       loopAnimation(
                                         [
-                                          "რადგანაც შენ მენტორ ასისტენტი გახდი",
-                                          "შენ ახლა გახდები მენტორი",
+                                          "რადგანაც შენ ნელ-ნელა მენტორ ასისტენტი გახდი",
+                                          "შენ ახლა დამსაახურებულად  გახდები მენტორი",
                                         ],
-                                        3000,
-                                        100,
-                                        1000,
+                                         500,
+                                          100,
+                                          800,
                                         function () {
                                           index = 0;
                                           loopAnimation(
                                             [
+                                              "ამისთვის  დიდი  დრო  და   ზალისხმება დაგჭირდა,",
+                                              "შენ დაუღალავად სწავლობდი, წერდი  კოდს, ეხმარებოდი მოსწავლეებს",
+                                              "ღამე კი ბაკურიანში მიდიოდი და თხილამურებით სალტოებს  აკეთებდი",
                                               "გილოცავ",
-                                              "შენ იმდენად მაგარი გახდი რომ",
-                                              "თვით ნიკა კეშელავა ჩაანაცვლე",
-                                              "შენ ცხოვრებაში უკვე ყველაფერს მიაღწიე",
+                                              "შეენ თვით გაბრიელ მოლოდინი  ჩაანაცვლე",
+                                              "+10000aura",
                                             ],
                                             100,
                                             100,
                                             1000,
                                             function () {
-                                              img.src = "img/change_boss.png";
+                                              img.src = "img/gabrielRetiring.png";
 
                                               createRestartButton(
-                                                "ახალ შეგიძლია რეინკარნაცია განიცადო",
+                                                "ახალ შეგიძლია რეინკარნაცია განიცადო , noob",
                                                 true,
                                               );
                                             },
@@ -1094,7 +1023,19 @@ function showChoiceButtons() {
                               const refuse = createGameButton(
                                 "ლიდერი დავრჩები",
                                 "#dc3545",
-                                function () {},
+                                function () {
+                                   refuse.style.display = "none";
+                                  index = 0;
+                                  loopAnimation(
+                                    [
+                                      "გასაგებია, შენ ამ  ეტაპზე დარჩი ლიდერად",
+                                      "WHAT'S NEXT?",
+                                    ],
+                                    200,
+                                    100,
+                                    500,
+                                  )
+                                },
                                 "150px",
                               );
 
@@ -1124,7 +1065,7 @@ function showChoiceButtons() {
                               [
                                 "ცუდია რომ არ მოგინდა ლიდერი გამხდარიყავი",
                                 "ამიტომაც დაისჯები და",
-                                "ცხოვრებას თვიდან დაიწყებ",
+                                "ცხოვრებას თავიდან დაიწყებ!!!",
                               ],
                               40,
                               100,
@@ -1206,9 +1147,8 @@ function showChoiceButtons() {
             });
           }
         },
-      ); // აქ არაფერი არ გადაგვაქვს, რადგან width არ გვჭირდება
+      ); 
 
-      // --- ღილაკი: ზერელე სწავლა ---
       const bedLearn = createGameButton(
         "ზერელე სწავლა",
         "#ffc107",
@@ -1285,8 +1225,7 @@ function showChoiceButtons() {
                         "და",
                         "სამსახური",
                         "ვერ",
-                        "იპოვე",
-                        "შენ არ გაგიმართლა და ვერ იპოვე სამსახური",
+                        "იპოვე"
                       ],
                       300,
                       200,
@@ -1303,7 +1242,7 @@ function showChoiceButtons() {
                     index = 0;
                     loopAnimation(
                       [
-                        "შენ იპოვე პროფესია მაგრამ რადგანაც GOA-ში ზარმაცობდი დიდი ანაზღაურება არ გქონდა ამიტომა შენ გახდი სამინისტროს მონა",
+                        "შენ იპოვე პროფესია მაგრამ რადგანაც GOA-ში ზარმაცობდი დიდი ანაზღაურება არ გქონდა ამიტომა შენ გახდი სამინისტროს მონა, YOU ARE STUCK IN MATRIX!",
                       ],
                       300,
                       200,
@@ -1347,7 +1286,7 @@ function showChoiceButtons() {
 
   // --- ღილაკი: Roblox ---
   const btnRoblox = createGameButton(
-    "არ მირჩევნია Roblox-ი ვითამაშო",
+    "არმცალია, Roblox-ი მელოდება",
     "#dc3545",
     function () {
       container.style.display = "none";
