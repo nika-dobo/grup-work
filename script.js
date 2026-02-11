@@ -356,9 +356,10 @@ function showChoiceButtons() {
           );
 
           // --- ეს არის მთავარი ფუნქცია ჰაკათონის ქვიზისთვის ---
-          function startHackathonQuiz() {
+          function startHackathonQuiz(eazy) {
             // ვასუფთავებთ ეკრანს ღილაკებისგან
-            // აქ ვქმნით ქვიზის კონტეინერს
+            wrapper.innerHTML = "";
+
             const quizContainer = document.createElement("div");
             quizContainer.style.cssText = `
                 display: flex; 
@@ -390,37 +391,31 @@ function showChoiceButtons() {
                 a1: "კი",
                 a2: "არა",
                 correct: 2,
-              }, // სწორია: არა
+              },
               {
                 q: "რას აბრუნებს [] == 0 ?",
                 a1: "true",
                 a2: "false",
                 correct: 1,
-              }, // სწორია: true
-              {
-                q: "რას აბრუნებს 2 + '2' ?",
-                a1: "4",
-                a2: "22",
-                correct: 2,
-              }, // სწორია: "22"
+              },
+              { q: "რას აბრუნებს 2 + '2' ?", a1: "4", a2: "22", correct: 2 },
               {
                 q: "არის თუ არა JavaScript კომპილირებადი ენა?",
                 a1: "კი",
                 a2: "არა",
                 correct: 2,
-              }, // სწორია: არა (ინტერპრეტირებადია)
+              },
               {
                 q: "რას აბრუნებს typeof null ?",
                 a1: "null",
                 a2: "object",
                 correct: 2,
-              }, // სწორია: object
+              },
             ];
 
             let currentQIndex = 0;
             let score = 0;
 
-            // ღილაკების შექმნა ერთხელ
             const btn1 = createGameButton(
               "",
               "#007bff",
@@ -437,33 +432,26 @@ function showChoiceButtons() {
               },
               "200px",
             );
+
             buttonsDiv.appendChild(btn1);
             buttonsDiv.appendChild(btn2);
 
-            // ფუნქცია პასუხის შესამოწმებლად
             function checkAnswer(selectedOption) {
-              // ვამოწმებთ არის თუ არა პასუხი სწორი
               if (selectedOption === questions[currentQIndex].correct) {
                 score++;
               }
-
-              // გადავდივართ შემდეგ კითხვაზე
               currentQIndex++;
               loadQuestion();
             }
 
-            // ფუნქცია კითხვის ჩასატვირთად
             function loadQuestion() {
               if (currentQIndex < questions.length) {
-                // თუ კითხვები კიდევ არის
                 questionText.innerText = questions[currentQIndex].q;
                 btn1.innerText = questions[currentQIndex].a1;
                 btn2.innerText = questions[currentQIndex].a2;
               } else {
                 // თუ კითხვები მორჩა
                 quizContainer.style.display = "none";
-
-                // ვითვლით ადგილს (6 - ქულა)
                 let place = 6 - score;
 
                 index = 0;
@@ -477,10 +465,156 @@ function showChoiceButtons() {
                   100,
                   1000,
                   function () {
-                    createRestartButton();
+                    // გადაწყვეტილების მიღება მენტორის/ლიდერის მიხედვით
+                    // ფუნქცია createEndChoice ამარტივებს კოდს და თავს არიდებს გამეორებას
+                    if (eazy) {
+                      loopAnimation(
+                        ["ახლა გინდა გახდე ლიდერი"],
+                        40,
+                        100,
+                        1000,
+                        function () {
+                          createEndChoice("ლიდერი", "მინი ლიდერი");
+                        },
+                      );
+                    } else {
+                      loopAnimation(
+                        ["ახლა გინდა გახდე მენტორი"],
+                        40,
+                        100,
+                        1000,
+                        function () {
+                          createEndChoice("მენტორი", "მენტორ ასისტენტი");
+                        },
+                      );
+                    }
                   },
                 );
               }
+            }
+
+            // დამხმარე ფუნქცია ფინალური ღილაკების და ანიმაციების შესაქმნელად
+            function createEndChoice(roleName, miniRoleName) {
+              const endChoiceContainer = document.createElement("div");
+              endChoiceContainer.style.cssText = `
+                display: flex; gap: 50px; opacity: 0; justify-content: center;
+                position: absolute; bottom: 350px; left: 0; width: 100%; z-index: 1000;
+              `;
+
+              const yesBtn = createGameButton(
+                "კი",
+                "#007bff",
+                function () {
+                  endChoiceContainer.style.display = "none";
+                  index = 0;
+                  loopAnimation(
+                    [
+                      "კარგი გადაწყვეტილებაა",
+                      `მაგრამ სანამ ${roleName} გახდები ჯერ ${miniRoleName} უნდა იყო`,
+                    ],
+                    40,
+                    100,
+                    1000,
+                    function () {
+                      index = 0;
+                      loopAnimation(
+                        [
+                          `რადგანაც შენ ${miniRoleName} გახდი`,
+                          `შენ ახლა გახდები ${roleName}`,
+                        ],
+                        40,
+                        100,
+                        1000,
+                        function () {
+                          index = 0;
+                          loopAnimation(
+                            [
+                              "გილოცავ",
+                              "შენ იმდენად მაგარი გახდი რომ",
+                              "თვით ნიკა კეშელავა ჩაანაცვლე",
+                              "შენ ცხოვრებაში უკვე ყველაფერს მიაღწიე",
+                            ],
+                            40,
+                            100,
+                            1000,
+                            function () {
+                              if (img) img.src = "img/change_boss.png";
+                              createRestartButton(
+                                "ახლა შეგიძლია რეინკარნაცია განიცადო",
+                                true,
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+                "150px",
+              );
+
+              const noBtn = createGameButton(
+                "არა",
+                "#007bff",
+                function () {
+                  endChoiceContainer.style.display = "none";
+                  index = 0;
+                  loopAnimation(
+                    [
+                      "შეგვეშალა აქ კი უნდა ყოფილიყო sorry",
+                      `ამიტომაც ჯერ ${miniRoleName} გახდები:)`,
+                    ],
+                    40,
+                    100,
+                    1000,
+                    function () {
+                      index = 0;
+                      loopAnimation(
+                        [
+                          `რადგანაც შენ ${miniRoleName} გახდი`,
+                          `შენ ახლა გახდები ${roleName}`,
+                        ],
+                        40,
+                        100,
+                        1000,
+                        function () {
+                          index = 0;
+                          loopAnimation(
+                            [
+                              "გილოცავ",
+                              "შენ იმდენად მაგარი გახდი რომ",
+                              "თვით ნიკა კეშელავა ჩაანაცვლე",
+                              "შენ ცხოვრებაში უკვე ყველაფერს მიაღწიე",
+                            ],
+                            40,
+                            100,
+                            1000,
+                            function () {
+                              if (img) img.src = "img/change_boss.png";
+                              createRestartButton(
+                                "ახლა შეგიძლია რეინკარნაცია განიცადო",
+                                true,
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+                "150px",
+              );
+
+              endChoiceContainer.appendChild(yesBtn);
+              endChoiceContainer.appendChild(noBtn);
+              document.body.appendChild(endChoiceContainer);
+
+              anime({
+                targets: endChoiceContainer,
+                opacity: [0, 1],
+                translateY: [20, 0],
+                duration: 1000,
+              });
             }
 
             // პირველი კითხვის ჩატვირთვა
@@ -671,7 +805,7 @@ function showChoiceButtons() {
                                     100,
                                     1000,
                                     function () {
-                                      startHackathonQuiz(); // იწყება ქვიზი
+                                      startHackathonQuiz(true); // იწყება ქვიზი
                                     },
                                   );
                                 },
@@ -950,7 +1084,7 @@ function showChoiceButtons() {
                                     100,
                                     1000,
                                     function () {
-                                      startHackathonQuiz(); // იწყება ქვიზი
+                                      startHackathonQuiz(false);
                                     },
                                   );
                                 },
