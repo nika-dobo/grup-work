@@ -34,7 +34,7 @@ function createGameButton(text, color, onClickAction, width) {
   return button;
 }
 
-// ფუნქცია: GAME OVER ეფექტი
+
 function triggerGameOverAnimation() {
   playAudioWithTimer(
     "audio/universfield-game-over-deep-male-voice-clip-352695.mp3",
@@ -192,9 +192,6 @@ function loopAnimation(
   });
 }
 
-// --- 3. თამაშის ძირითადი სცენარი ---
-
-// საწყისი ანიმაცია
 index = 0;
 loopAnimation(["მოგესალმები", "თქვენ მოხვდით უსასრულო ლუპში"]);
 
@@ -213,7 +210,7 @@ function showChoiceButtons() {
     z-index: 1000;
   `;
 
-  // --- ღილაკი 1: შესვლა GOA-ში ---
+
   const btnGoa = createGameButton("შესვლა GOA-ში", "#28a745", function () {
     if (img) img.src = "img/GOA.png";
     container.style.display = "none";
@@ -239,7 +236,7 @@ function showChoiceButtons() {
         z-index: 1000;
       `;
 
-      // --- ღილაკი: ჩადურად სწავლა ---
+
       const goodLearn = createGameButton(
         "ჩადურად სწავლა",
         "#28a745",
@@ -276,9 +273,7 @@ function showChoiceButtons() {
             showMentorLeaderBtns,
           );
 
-          // --- ეს არის მთავარი ფუნქცია ჰაკათონის ქვიზისთვის ---
           function startHackathonQuiz(eazy) {
-            // ვასუფთავებთ ეკრანს ღილაკებისგან
             wrapper.innerHTML = "";
 
             const quizContainer = document.createElement("div");
@@ -305,7 +300,6 @@ function showChoiceButtons() {
 
             document.body.appendChild(quizContainer);
 
-            // კითხვების სია (JS თემატიკა)
             const questions = [
               {
                 q: "შეგვიძლია თუ არა const ცვლადის მნიშვნელობის შეცვლა?",
@@ -371,7 +365,6 @@ function showChoiceButtons() {
                 btn1.innerText = questions[currentQIndex].a1;
                 btn2.innerText = questions[currentQIndex].a2;
               } else {
-                // თუ კითხვები მორჩა
                 quizContainer.style.display = "none";
                 let place = 6 - score;
 
@@ -386,21 +379,19 @@ function showChoiceButtons() {
                   100,
                   1000,
                   function () {
-                    // გადაწყვეტილების მიღება მენტორის/ლიდერის მიხედვით
-                    // ფუნქცია createEndChoice ამარტივებს კოდს და თავს არიდებს გამეორებას
                     if (eazy) {
                       loopAnimation(
                         ["ახლა გინდა გახდე ლიდერი"],
                         40,
                         100,
-                        1000,
+                        700,
                         function () {
                           createEndChoice("ლიდერი", "მინი ლიდერი");
                         },
                       );
                     } else {
                       loopAnimation(
-                        ["ახლა გინდა გახდე მენტორი"],
+                        ["ახლა გინდა გახდი მენტორი"],
                         40,
                         100,
                         1000,
@@ -414,7 +405,6 @@ function showChoiceButtons() {
               }
             }
 
-            // დამხმარე ფუნქცია ფინალური ღილაკების და ანიმაციების შესაქმნელად
             function createEndChoice(roleName, miniRoleName) {
               const endChoiceContainer = document.createElement("div");
               endChoiceContainer.style.cssText = `
@@ -540,7 +530,6 @@ function showChoiceButtons() {
               });
             }
 
-            // პირველი კითხვის ჩატვირთვა
             loadQuestion();
           }
 
@@ -561,7 +550,6 @@ function showChoiceButtons() {
             padding-right: 20px;
           `;
 
-            // --- ღილაკი: გავხდე მენტორი ---
             const beMentor = createGameButton(
               "გავხდე მენტორი",
               "#ffc107",
@@ -714,13 +702,12 @@ function showChoiceButtons() {
                                 "150px",
                               );
 
-                              // --- HACKATHON BUTTON (MENTOR PATH) ---
                               const hakaton = createGameButton(
                                 "წავიდე ჰაკათონზე",
                                 "#dc3545",
                                 function () {
                                   hakatonOrLider.style.display = "none";
-                                  img.src = "img/hackhaton.png"; // შეცვალე სურათი თუ გაქვს
+                                  img.src = "img/hackhaton.png";
                                   index = 0;
                                   loopAnimation(
                                     [
@@ -731,7 +718,7 @@ function showChoiceButtons() {
                                     100,
                                     1000,
                                     function () {
-                                      startHackathonQuiz(true); // იწყება ქვიზი
+                                      startHackathonQuiz(true); 
                                     },
                                   );
                                 },
