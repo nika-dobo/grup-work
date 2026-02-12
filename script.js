@@ -6,7 +6,6 @@ const img = document.getElementById("main-img");
 let secretCount = 0;
 let index = 0;
 
-
 function createGameButton(text, color, onClickAction, width) {
   const button = document.createElement("button");
   button.innerText = text;
@@ -29,11 +28,9 @@ function createGameButton(text, color, onClickAction, width) {
       ${buttonWidth}
   `;
 
- 
   button.onclick = onClickAction;
   return button;
 }
-
 
 function triggerGameOverAnimation() {
   playAudioWithTimer(
@@ -41,12 +38,10 @@ function triggerGameOverAnimation() {
     2000,
   );
 
-
   wrapper.style.color = "red";
   wrapper.style.textShadow = "3px 3px 0px #ff0000, -3px -3px 0px #ff7979";
   wrapper.style.fontSize = "2rem";
   wrapper.style.fontWeight = "bold";
-
 }
 
 // აუდიოს ჩართვა ტაიმერით
@@ -210,7 +205,6 @@ function showChoiceButtons() {
     z-index: 1000;
   `;
 
-
   const btnGoa = createGameButton("შესვლა GOA-ში", "#28a745", function () {
     if (img) img.src = "img/GOA.png";
     container.style.display = "none";
@@ -235,7 +229,6 @@ function showChoiceButtons() {
         width: 100%;
         z-index: 1000;
       `;
-
 
       const goodLearn = createGameButton(
         "ჩადურად სწავლა",
@@ -264,7 +257,8 @@ function showChoiceButtons() {
 
           index = 0;
           loopAnimation(
-            ['dd'
+            [
+              "dd",
               // " GOA-ს აკადემიაში ჩაბარებისას ვიცოდი, რომ ეს ნაბიჯი ჩემს მომავალს შეცვლიდა, ამიტომ პირველივე დღიდან აქტიურად ვსწავლობდი. არცერთ დავალებას ვტოვებდი უყურადღებოდ, რადგან მჯეროდა, რომ დისციპლინა წარმატების საწინდარია. მენტორების დახმარებით რთული მასალა მარტივად ავითვისე და რეიტინგებშიც მალევე დავწინაურდი. ამ შედეგმა საკუთარი თავის რწმენა გამიორმაგა. ახლა ვხვდები, რომ აკადემიაში გატარებული დრო ჩემი პროფესიული ზრდისთვის გადამწყვეტი იყო. რას იზავ შენ?",
             ],
             40,
@@ -440,7 +434,6 @@ function showChoiceButtons() {
                           index = 0;
                           loopAnimation(
                             [
-                              
                               "შენ ყველანაირი დაბრკოლება   გადალახე",
                               "გახდი მინი-ლიდერი, ლიდერი, მენტორ-ასისტენტი, შემდგომ კი მენტორი",
                               "ეს  ბევრი შრომის შედეგია",
@@ -674,20 +667,17 @@ function showChoiceButtons() {
                                           index = 0;
                                           loopAnimation(
                                             [
-                                              
                                               "შენ დროთა განმავლობაშ ბევრ  მოსწავლეს დაეხმარე,",
                                               "გაკვეთილის ჩატარებაც კი შეძელი  დამოუკიდეებლად, ისე რომ ყველას  ჩართული ჰქონდა კამერა",
                                               "ამიტომ....,",
                                               "გილოცავ!!!!!!!!+100010  aura",
-                                              "შენ  თვით გოგა ჩალაური ჩაანაცვლე",
-                                              "დირექტორობამდე ორი ნაბიჯი გაკლია...",
+                                              "შენ თვით კეშელაბა ჩაანაცვლე ჩაანაცვლე",
                                             ],
                                             600,
                                             100,
                                             1000,
                                             function () {
-                                              img.src = "img/gogaRetired.png";
-                                              playAudioWithTimer('angryGoga.mp3',6000)
+                                              img.src = "img/change_boss.png";
                                               createRestartButton(
                                                 "ახალ შეგიძლია რეინკარნაცია განიცადო",
                                                 true,
@@ -718,7 +708,7 @@ function showChoiceButtons() {
                                     100,
                                     1000,
                                     function () {
-                                      startHackathonQuiz(true); 
+                                      startHackathonQuiz(true);
                                     },
                                   );
                                 },
@@ -728,7 +718,29 @@ function showChoiceButtons() {
                               const refuse = createGameButton(
                                 "მენტორი დავრჩები",
                                 "#dc3545",
-                                function () {},
+                                function () {
+                                  hakatonOrLider.style.display = "none";
+                                  index = 0;
+                                  loopAnimation(
+                                    [
+                                      "გასაგებია, შენ ამ  ეტაპზე დარჩი მენტორი",
+                                      "შენ დიდი დრო დახარჯე",
+                                      "და დიდი მონდომების სწავლობდი და სხვებს ასწავლიდი",
+                                      "ამიტომაც შენ თვით გაბრილე მომოდინი ჩაანაცვლე",
+                                    ],
+                                    200,
+                                    100,
+                                    500,
+                                    function () {
+                                      img.src = "img/gabrielRetiring.png";
+
+                                      createRestartButton(
+                                        "ახალ შეგიძლია რეინკარნაცია განიცადო",
+                                        true,
+                                      );
+                                    },
+                                  );
+                                },
                                 "150px",
                               );
 
@@ -949,28 +961,29 @@ function showChoiceButtons() {
                                           "რადგანაც შენ ნელ-ნელა მენტორ ასისტენტი გახდი",
                                           "შენ ახლა დამსაახურებულად  გახდები მენტორი",
                                         ],
-                                         500,
-                                          100,
-                                          800,
+                                        500,
+                                        100,
+                                        800,
                                         function () {
                                           index = 0;
                                           loopAnimation(
                                             [
-                                              "ამისთვის  დიდი  დრო  და   ზალისხმება დაგჭირდა,",
-                                              "შენ დაუღალავად სწავლობდი, წერდი  კოდს, ეხმარებოდი მოსწავლეებს",
-                                              "ღამე კი ბაკურიანში მიდიოდი და თხილამურებით სალტოებს  აკეთებდი",
+                                              "ამისთვის დიდი დრო და ზალისხმება დაგჭირდა,",
+                                              "შენ დაუღალავად სწავლობდი, წერდი კოდს, ეხმარებოდი მოსწავლეებს",
+                                              "ღამე კი ბაკურიანში მიდიოდი და თხილამურებით სალტოებს აკეთებდი",
                                               "გილოცავ",
-                                              "შეენ თვით გაბრიელ მოლოდინი  ჩაანაცვლე",
+                                              "შეენ თვით კეშელავა ჩაანაცვლე ჩაანაცვლე",
                                               "+10000aura",
                                             ],
                                             100,
                                             100,
                                             1000,
                                             function () {
-                                              img.src = "img/gabrielRetiring.png";
+                                              img.src =
+                                                "img/gabrielRetiring.png";
 
                                               createRestartButton(
-                                                "ახალ შეგიძლია რეინკარნაცია განიცადო , noob",
+                                                "ახალ შეგიძლია რეინკარნაცია განიცადო",
                                                 true,
                                               );
                                             },
@@ -1011,17 +1024,27 @@ function showChoiceButtons() {
                                 "ლიდერი დავრჩები",
                                 "#dc3545",
                                 function () {
-                                   refuse.style.display = "none";
+                                  hakatonOrLider.style.display = "none";
                                   index = 0;
                                   loopAnimation(
                                     [
                                       "გასაგებია, შენ ამ  ეტაპზე დარჩი ლიდერად",
-                                      "WHAT'S NEXT?",
+                                      "შენ დიდი დრო დახარჯე",
+                                      "და დიდი მონდომების სწავლობდი და სხვებს ასწავლიდი",
+                                      "ამიტომაც შენ თვით გოგა ჩლაური ჩაანაცვლე",
                                     ],
                                     200,
                                     100,
                                     500,
-                                  )
+                                    function () {
+                                      img.src = "img/gogaRetired.png";
+
+                                      createRestartButton(
+                                        "ახალ შეგიძლია რეინკარნაცია განიცადო",
+                                        true,
+                                      );
+                                    },
+                                  );
                                 },
                                 "150px",
                               );
@@ -1134,7 +1157,7 @@ function showChoiceButtons() {
             });
           }
         },
-      ); 
+      );
 
       const bedLearn = createGameButton(
         "ზერელე სწავლა",
@@ -1212,7 +1235,7 @@ function showChoiceButtons() {
                         "და",
                         "სამსახური",
                         "ვერ",
-                        "იპოვე"
+                        "იპოვე",
                       ],
                       300,
                       200,
