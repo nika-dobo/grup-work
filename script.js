@@ -44,7 +44,6 @@ function triggerGameOverAnimation() {
   wrapper.style.fontWeight = "bold";
 }
 
-// აუდიოს ჩართვა ტაიმერით
 function playAudioWithTimer(src, duration) {
   const sound = new Audio(src);
   sound.loop = true;
@@ -61,7 +60,6 @@ function playAudioWithTimer(src, duration) {
   }, duration);
 }
 
-// "თავიდან დაწყების" ღილაკი
 function createRestartButton(
   txt = "ცხოვრების თავიდან დაწყება",
   secret = false,
@@ -840,7 +838,6 @@ function showChoiceButtons() {
               "200px",
             );
 
-            // --- ღილაკი: გავხდე ლიდერი ---
             const beLider = createGameButton(
               "გავხდე ლიდერი",
               "#ffc107",
@@ -995,13 +992,12 @@ function showChoiceButtons() {
                                 "150px",
                               );
 
-                              // --- HACKATHON BUTTON (LEADER PATH) ---
                               const hakaton = createGameButton(
                                 "წავიდე ჰაკათონზე",
                                 "#dc3545",
                                 function () {
                                   hakatonOrMentor.style.display = "none";
-                                  img.src = "img/hackhaton.png"; // შეცვალე სურათი თუ გაქვს
+                                  img.src = "img/hackhaton.png";
                                   index = 0;
                                   loopAnimation(
                                     [
@@ -1293,7 +1289,6 @@ function showChoiceButtons() {
     }
   });
 
-  // --- ღილაკი: Roblox ---
   const btnRoblox = createGameButton(
     "არმცალია, Roblox-ი მელოდება",
     "#dc3545",
@@ -1328,7 +1323,6 @@ function showChoiceButtons() {
   });
 }
 
-// 4. საწყისი ღილაკის ლოგიკა (მთავარი Event Listener)
 btn.addEventListener("click", function () {
   btn.style.display = "none";
   if (img) img.src = "img/opened.png";
