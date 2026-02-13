@@ -62,12 +62,8 @@ function playAudioWithTimer(src, duration) {
 
 function createRestartButton(
   txt = "ცხოვრების თავიდან დაწყება",
-  secret = false,
+  secret = false,// არ მუშაობს
 ) {
-  if (secret) {
-    secretCount++;
-    console.log(secretCount);
-  }
 
   const restartBtn = createGameButton(txt, "#ff0000", function () {
     location.reload();
@@ -1019,7 +1015,7 @@ function showChoiceButtons() {
                                 "ლიდერი დავრჩები",
                                 "#dc3545",
                                 function () {
-                                  hakatonOrLider.style.display = "none";
+                                  hakatonOrMentor.style.display = "none";
                                   index = 0;
                                   loopAnimation(
                                     [
