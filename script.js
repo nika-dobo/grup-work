@@ -994,7 +994,7 @@ function showChoiceButtons() {
                                             100,
                                             1000,
                                             function () {
-                                              img.src = "img/cgange_boss.png";
+                                              img.src = "img/change_boss.png";
 
                                               playAudioWithTimer(
                                                 "audio/ribhavagrawal-a-man-sobbing-type-2-265500.mp3",
